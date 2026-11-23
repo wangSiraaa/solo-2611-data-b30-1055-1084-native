@@ -1,0 +1,27 @@
+[
+  {
+    "frame_id": 1,
+    "puppet": "redpup",
+    "visible": true,
+    "merged": false,
+    "pose": "red_double",
+    "determinate": true,
+    "alternatives": [
+      "red_double/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：red_double/left/原样"
+  },
+  {
+    "frame_id": 2,
+    "puppet": "redpup",
+    "visible": true,
+    "merged": false,
+    "pose": null,
+    "determinate": false,
+    "alternatives": [
+      "red_left_only/left/原样",
+      "red_left_only/right/镜像"
+    ],
+    "review_basis": "多条纸样同时可解释，留作成组替选：red_left_only/left/原样；red_left_only/right/镜像"
+  }
+]

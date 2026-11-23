@@ -1,0 +1,80 @@
+{
+  "station": "double_frame",
+  "slot_count": 3,
+  "delivery_order": [
+    "E001",
+    "E002",
+    "E003",
+    "E004"
+  ],
+  "slots": [
+    {
+      "index": 0,
+      "kind": "remount",
+      "detail": "换框挂上实偶 realRed",
+      "puppet": "realRed",
+      "camera": null
+    },
+    {
+      "index": 1,
+      "kind": "take",
+      "detail": "双面框同拍 frame 1：机位 camFront,camBack",
+      "puppet": "realRed",
+      "camera": null
+    },
+    {
+      "index": 2,
+      "kind": "take",
+      "detail": "双面框同拍 frame 2：机位 camFront,camBack",
+      "puppet": "realRed",
+      "camera": null
+    }
+  ],
+  "exposures": [
+    {
+      "exposure_id": "E001",
+      "frame_id": 1,
+      "camera": "camFront",
+      "side": "front",
+      "costume": "red-front",
+      "pose": "red_double",
+      "puppet": "realRed",
+      "slot_index": 1,
+      "group": "G1"
+    },
+    {
+      "exposure_id": "E002",
+      "frame_id": 1,
+      "camera": "camBack",
+      "side": "back",
+      "costume": "red-back",
+      "pose": "red_double",
+      "puppet": "realRed",
+      "slot_index": 1,
+      "group": "G1"
+    },
+    {
+      "exposure_id": "E003",
+      "frame_id": 2,
+      "camera": "camFront",
+      "side": "front",
+      "costume": "red-front",
+      "pose": "red_double",
+      "puppet": "realRed",
+      "slot_index": 2,
+      "group": "G2"
+    },
+    {
+      "exposure_id": "E004",
+      "frame_id": 2,
+      "camera": "camBack",
+      "side": "back",
+      "costume": "red-back",
+      "pose": "red_double",
+      "puppet": "realRed",
+      "slot_index": 2,
+      "group": "G2"
+    }
+  ],
+  "undelivered": []
+}

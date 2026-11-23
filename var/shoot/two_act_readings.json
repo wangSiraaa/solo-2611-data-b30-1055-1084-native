@@ -1,0 +1,26 @@
+[
+  {
+    "frame_id": 0,
+    "puppet": "redpup",
+    "visible": true,
+    "merged": false,
+    "pose": "act1",
+    "determinate": true,
+    "alternatives": [
+      "act1/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：act1/left/原样"
+  },
+  {
+    "frame_id": 1,
+    "puppet": "redpup",
+    "visible": true,
+    "merged": false,
+    "pose": "act2",
+    "determinate": true,
+    "alternatives": [
+      "act2/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：act2/left/原样"
+  }
+]

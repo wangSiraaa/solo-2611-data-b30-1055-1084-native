@@ -1,0 +1,92 @@
+[
+  {
+    "frame_id": 0,
+    "puppet": "bluepup",
+    "visible": true,
+    "merged": false,
+    "pose": "crowd_blue",
+    "determinate": true,
+    "alternatives": [
+      "crowd_blue/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：crowd_blue/left/原样"
+  },
+  {
+    "frame_id": 0,
+    "puppet": "greenpup",
+    "visible": true,
+    "merged": false,
+    "pose": "crowd_green",
+    "determinate": true,
+    "alternatives": [
+      "crowd_green/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：crowd_green/left/原样"
+  },
+  {
+    "frame_id": 0,
+    "puppet": "redpup",
+    "visible": true,
+    "merged": false,
+    "pose": "crowd_red",
+    "determinate": true,
+    "alternatives": [
+      "crowd_red/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：crowd_red/left/原样"
+  },
+  {
+    "frame_id": 0,
+    "puppet": "redpup2",
+    "visible": false,
+    "merged": false,
+    "pose": null,
+    "determinate": false,
+    "alternatives": [],
+    "review_basis": "种子处同色像素不可见（被遮住或不在画面），无法读取"
+  },
+  {
+    "frame_id": 1,
+    "puppet": "bluepup",
+    "visible": true,
+    "merged": false,
+    "pose": "crowd_blue",
+    "determinate": true,
+    "alternatives": [
+      "crowd_blue/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：crowd_blue/left/原样"
+  },
+  {
+    "frame_id": 1,
+    "puppet": "greenpup",
+    "visible": true,
+    "merged": false,
+    "pose": "crowd_green",
+    "determinate": true,
+    "alternatives": [
+      "crowd_green/left/原样"
+    ],
+    "review_basis": "唯一可解释读法：crowd_green/left/原样"
+  },
+  {
+    "frame_id": 1,
+    "puppet": "redpup",
+    "visible": true,
+    "merged": true,
+    "pose": null,
+    "determinate": false,
+    "alternatives": [],
+    "review_basis": "两只偶连为同一个色块，按规则不给任一偶发纸样"
+  },
+  {
+    "frame_id": 1,
+    "puppet": "redpup2",
+    "visible": true,
+    "merged": true,
+    "pose": null,
+    "determinate": false,
+    "alternatives": [],
+    "review_basis": "两只偶连为同一个色块，按规则不给任一偶发纸样"
+  }
+]

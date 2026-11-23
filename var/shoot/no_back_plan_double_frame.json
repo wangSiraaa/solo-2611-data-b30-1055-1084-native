@@ -1,0 +1,27 @@
+{
+  "station": "double_frame",
+  "slot_count": 0,
+  "delivery_order": [],
+  "slots": [],
+  "exposures": [],
+  "undelivered": [
+    {
+      "frame_id": 1,
+      "cameras": [
+        "camFront",
+        "camBack2"
+      ],
+      "reason": "该面无所求服饰",
+      "trace": "格（frame 1）机位 camBack2 必须看偶的 back 面，但纸样 'red_double' 的 back_costume 为空；两面并非都有服饰，整格拒收"
+    },
+    {
+      "frame_id": 2,
+      "cameras": [
+        "camFront",
+        "camBack2"
+      ],
+      "reason": "该面无所求服饰",
+      "trace": "格（frame 2）机位 camBack2 必须看偶的 back 面，但纸样 'red_double' 的 back_costume 为空；两面并非都有服饰，整格拒收"
+    }
+  ]
+}
