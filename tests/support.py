@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from orgbudget.budget_service import BudgetService
+from orgbudget.equipment_service import EquipmentService
 from orgbudget.org_service import OrgService
 
 
@@ -54,3 +55,36 @@ class ServiceTestCase(unittest.TestCase):
         if weights:
             result.update(weights)
         return result
+
+
+class EquipmentTestCase(ServiceTestCase):
+    """在组织 / 预算之上再挂设备会计中心仓。"""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.equipment = EquipmentService(
+            self.tmp / "equipment.db", self.budget, busy_timeout_ms=30_000
+        )
+
+    def build_workshop(self, leaf: str = "W", root_budget: int = 100_000) -> int:
+        """建 HQ -> leaf 的工坊叶并登记根预算，返回组织产品版本。"""
+        version = self.build_tree([("HQ", None), (leaf, "HQ")])
+        product = self.org.get_product(version)
+        self.budget.register_root_budget(version, root_budget, self.weights_for(product))
+        return version
+
+    def pay(
+        self,
+        request_no: str,
+        dept: str,
+        commit_amount: int,
+        spend_amount: int,
+        idem_key: str,
+        *,
+        cancel_rest: bool = False,
+    ) -> None:
+        """在预算仓办一笔实付：开承诺、登记支出，可选取消余款。"""
+        self.budget.create_commitment(request_no, dept, commit_amount)
+        self.budget.register_spend(request_no, spend_amount, idem_key)
+        if cancel_rest:
+            self.budget.cancel_commitment(request_no)

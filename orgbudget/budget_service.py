@@ -114,6 +114,16 @@ class Commitment:
 
 
 @dataclass(frozen=True)
+class SpendEvent:
+    """一笔实际支出事件（仅追加事实，认账与审计的最小原件）。"""
+
+    request_no: str
+    dept_id: str
+    amount: int
+    idem_key: str
+
+
+@dataclass(frozen=True)
 class SchemeInfo:
     scheme_id: int
     org_version: int
@@ -548,6 +558,16 @@ class BudgetService:
         params: tuple = (dept_id,) if dept_id else ()
         with self._connect() as con:
             return tuple(con.execute(sql, params).fetchall())
+
+    def spend_event(self, idem_key: str) -> Optional[SpendEvent]:
+        """按幂等键读取一笔实际支出事件；不存在返回 ``None``。"""
+        with self._connect() as con:
+            row = con.execute(
+                "SELECT request_no, dept_id, amount, idem_key FROM spend "
+                "WHERE idem_key = ?",
+                (idem_key,),
+            ).fetchone()
+            return SpendEvent(*row) if row is not None else None
 
     # ---------------------------------------------------------------- 内部
 

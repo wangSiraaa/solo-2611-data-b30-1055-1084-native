@@ -69,3 +69,115 @@ class CommitmentClosedError(BudgetError):
 
 class IdempotencyConflict(BudgetError):
     """同一幂等键被用不同的请求内容重试。"""
+
+
+class EquipmentError(Exception):
+    """设备会计（购建底单、原值封存、限额拨付与拆装）的所有错误基类。"""
+
+
+class EquipmentNotFound(EquipmentError):
+    """设备不存在。"""
+
+
+class DuplicateEquipment(EquipmentError):
+    """设备已登记。"""
+
+
+class PartNotFound(EquipmentError):
+    """部件不存在，或查无该退役件的拆装交易。"""
+
+
+class PartNotOnMachine(EquipmentError):
+    """旧件不在机上（从未安装或已退役），不能拆。"""
+
+
+class PartNotStocked(EquipmentError):
+    """新件没有带封存原值的在库备件，不能装。"""
+
+
+class PartAlreadyRetired(EquipmentError):
+    """部件号已退役：退役件原值是历史事实，底单不得再改动或领用。"""
+
+
+class SpendEventNotFound(EquipmentError):
+    """入账原件认领的实付事件不存在。"""
+
+
+class MissingCommitment(EquipmentError):
+    """实付事件所属承诺不存在。"""
+
+
+class DuplicateClaim(EquipmentError):
+    """同一笔实付事件被重复认领（重领）。"""
+
+
+class AllocationMismatch(EquipmentError):
+    """底单各来源之和与实付原件不符（漏分或超分）。"""
+
+
+class CrossDivisionClaim(EquipmentError):
+    """跨分部拿错实付原件：实付所属叶与设备归属叶不一致。"""
+
+
+class NotSealed(EquipmentError):
+    """设备尚未封存原值。"""
+
+
+class SealStale(EquipmentError):
+    """封存之后底单又有变动，原值封存已过期，须重新封存。"""
+
+
+class EquipmentLocked(EquipmentError):
+    """设备有未交还的独占拨付，账务被锁定。"""
+
+
+class NoLossLimit(EquipmentError):
+    """该工坊本期尚未登记报废损失限额。"""
+
+
+class InsufficientLossAllowance(EquipmentError):
+    """报废损失限额（或柜上留存额度）不足。"""
+
+
+class LimitBelowObligations(EquipmentError):
+    """限额低于已确认损失与在途拨付之和。"""
+
+
+class DisbursementNotFound(EquipmentError):
+    """拨付单不存在。"""
+
+
+class DisbursementClosed(EquipmentError):
+    """拨付单已交还结案。"""
+
+
+class CabinetBusy(EquipmentError):
+    """柜上还有未交还的拨付，不能再领新单。"""
+
+
+class NoActiveSlip(EquipmentError):
+    """柜上没有在持拨付单。"""
+
+
+class OrderNotFound(EquipmentError):
+    """拆单不存在。"""
+
+
+class OrderBlocked(EquipmentError):
+    """前序拆单未了结，后续拆单不能先动。"""
+
+
+class OrderStateError(EquipmentError):
+    """拆单状态不允许该操作。"""
+
+
+class ManifestInvalid(EquipmentError):
+    """柜上交还的回执与中心账务不符。"""
+
+
+class EquipmentIdempotencyConflict(EquipmentError):
+    """同一幂等键被用不同的请求内容重试。"""
+
+
+class EquipmentAuditError(EquipmentError):
+    """独立重算审计发现设备账不变量被破坏。"""
