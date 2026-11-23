@@ -130,3 +130,76 @@ Measured by `bench_scale.py`:
 No path optimisation, no measurement adjustment/least-squares, no inference
 of missing positions. Nothing beyond the one explicit base correction is
 changed.
+
+---
+
+# Daytime shadow-puppet stage (`shadow_stage.py`, `scene_730.py`)
+
+A separate subsystem that *uses* the physical route above: it never treats a
+chainage label as a global coordinate. `scene_730.py` binds each performance
+slot (影位) to a real rebuilt locator plaque (`asset`) on route `L` and
+certifies it against the per-section inspection coverage.
+
+## Slots, lights, and the citable board basis
+
+* A **slot** sits on an integer puppet-layout grid (`grid_x`), separate from
+  the route physical axis. It is `walked` only if the survey reached it.
+* Per beat a **light** has a direction (`W`/`E`) and a positive rational
+  slope. A **shade board** on the *up-light* side at grid distance `d` blocks
+  the slot when `height > d * slope`; equality leaves light.
+* Only the **nearest** up-light board matters — once a nearer board is too
+  short the beam passes and no farther board is cited. `light_report()`
+  returns each slot's status (`lit`/`dark`/`unresolved`) with the exact
+  `height > d*slope` comparison for every dark slot.
+* A slot on an **un-walked** leg, an **unmeasured** up-light board, or a
+  locator outside the inspected coverage is `unresolved` — it can never be
+  signed as lit **and never as a usable dark hiding slot**. This is why the
+  round answer "甲格有光" from the route alone is *not* enough to sign any
+  follow-up: the certification must reach the source side.
+
+## Grid shapes and occlusion
+
+Each puppet carries a grid shape (≤ 3×3) with one **face** cell. A lit slot
+projects its shape onto the screen; the front row (OC1) covers the back row
+(OC2) wherever the front puppet's shape includes the back puppet's face cell.
+A dark slot projects nothing. `visible_faces()` returns the faces actually
+seen, so swapping the front/back order can genuinely hide one face.
+
+## Scheduling, rebinding, standby and flip rigs
+
+`compile_show()` validates an **explicitly declared** beat block (no search)
+and reports the **earliest beat it cannot join**:
+
+* One puppet per master, one master per slot per beat, one appearance per
+  puppet per beat.
+* A master may only present a role it has **learned**. Rebinding to a
+  *different* puppet needs one empty beat; movement and turning obey the
+  stage's declared beat costs.
+* A **standby** prebinds a real puppet to a named substitute (who may lift it
+  on time from a wing). While a standby holds, the home venue cannot borrow
+  that substitute or puppet on the immediately following beat.
+* A **flip rig** preloads two puppets on one master so the face changes
+  inside a beat, at the cost of one extra measured, lit, occupiable slot; the
+  old face must be kept hidden along the flip seam or it is caught as a leak.
+* **Absence notices** are mandatory: if a notice says a role's bound master
+  is absent this beat, using that master is rejected; the substitute must be
+  among the on-hand masters; and a switch may not be acted on before the
+  notice is actually known (no premature switching).
+* `resume=` continues from an already-performed state (last performance,
+  puppets on hand, beats done), so a shift handover starts from reality.
+
+Stage limits (`check_limits`): ≤ 4 masters, ≤ 5 puppets, ≤ 6 beats,
+≤ 4 slots, grid ≤ 3×3.
+
+## Running
+
+```bash
+python3 solution/run_shadow_demo.py             # both worked shows
+python3 -m unittest discover -s solution/tests -v
+```
+
+The demo prints: both-beat-lit handoff (board height 1); the same handoff
+with the board raised to height 2 (beat 1 dark, rabbit can't show); the
+single-master rebind failure; a front/back depth swap where a face is
+covered; the standby substitute; and the flip-rig alternative with the
+forbidden passing-face check.
