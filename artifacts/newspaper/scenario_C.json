@@ -1,0 +1,22 @@
+{
+  "case": "C 空位换两个单格：仍有合法合刊，却不能交",
+  "combined_placement": {
+    "days": [
+      3,
+      4
+    ],
+    "issue_id": "I2",
+    "labels": [
+      "闰四月2",
+      "五月1"
+    ],
+    "run_no": 3,
+    "sheet_id": "S3"
+  },
+  "ok": true,
+  "order_error": {
+    "code": "combined_requires_double",
+    "detail": "slot K1: issue I2 is a combined issue and must use one double slot; two single slots cannot take it"
+  },
+  "valid_chronology_count": 1
+}

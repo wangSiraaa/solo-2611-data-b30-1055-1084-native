@@ -1,0 +1,249 @@
+{
+  "case": "A 基例：漏写闰字的合刊必占日3、4，缺3/4可补成",
+  "central_alternative": {
+    "assignments": [
+      {
+        "issue_id": "I2",
+        "missing_days": [
+          3,
+          4
+        ],
+        "slot_id": "K1",
+        "slot_kind": "double"
+      }
+    ],
+    "commit_by_day": 12,
+    "feasible": true,
+    "in_house_evidence": null,
+    "occupied_originals": [
+      "I2"
+    ],
+    "occupied_surrogates": [],
+    "order_id": "MO-A-C",
+    "product_id": "CH-A1",
+    "reasons": [],
+    "route": "central",
+    "shoot_by_day": 12,
+    "spare_sheets_used": []
+  },
+  "chosen_work_order": {
+    "assignments": [
+      {
+        "issue_id": "I2",
+        "missing_days": [
+          3,
+          4
+        ],
+        "slot_id": "K1",
+        "slot_kind": "double"
+      }
+    ],
+    "commit_by_day": 12,
+    "feasible": true,
+    "in_house_evidence": {
+      "I2": {
+        "in_house_at_commit": true,
+        "library": "LOCAL",
+        "provenance": "signed reading-room attestation at shooting time",
+        "surrogate_id": "F-I2"
+      }
+    },
+    "occupied_originals": [],
+    "occupied_surrogates": [
+      "F-I2"
+    ],
+    "order_id": "MO-A",
+    "product_id": "CH-A1",
+    "reasons": [],
+    "route": "surrogate",
+    "shoot_by_day": 12,
+    "spare_sheets_used": []
+  },
+  "day_table": [
+    {
+      "day": 0,
+      "label": "四月1"
+    },
+    {
+      "day": 1,
+      "label": "四月2"
+    },
+    {
+      "day": 2,
+      "label": "闰四月1"
+    },
+    {
+      "day": 3,
+      "label": "闰四月2"
+    },
+    {
+      "day": 4,
+      "label": "五月1"
+    },
+    {
+      "day": 5,
+      "label": "五月2"
+    }
+  ],
+  "designation": {
+    "date_label": "闰四月2",
+    "day": 3,
+    "holds_in": 1,
+    "holds_in_every_chronology": true,
+    "issue_id": "I2",
+    "placement": {
+      "days": [
+        3,
+        4
+      ],
+      "issue_id": "I2",
+      "labels": [
+        "闰四月2",
+        "五月1"
+      ],
+      "run_no": 3,
+      "sheet_id": "S3"
+    },
+    "total_valid_chronologies": 1
+  },
+  "ok": true,
+  "product": {
+    "almanac_id": "AL-XIAOLI",
+    "almanac_revision": 1,
+    "as_of_day": 12,
+    "catalog_revision": 1,
+    "digest": "37c6d757775dfb105118919db75157bb296d043a2350c72bef7036db098c6fde",
+    "note": "基例：合刊首栏闰字漏写，唯一收敛到闰四月二",
+    "placements": [
+      {
+        "days": [
+          0
+        ],
+        "issue_id": "I0",
+        "labels": [
+          "四月1"
+        ],
+        "run_no": 0,
+        "sheet_id": "S0"
+      },
+      {
+        "days": [
+          1
+        ],
+        "issue_id": "I1",
+        "labels": [
+          "四月2"
+        ],
+        "run_no": 1,
+        "sheet_id": "S1"
+      },
+      {
+        "days": [
+          2
+        ],
+        "issue_id": "I2S",
+        "labels": [
+          "闰四月1"
+        ],
+        "run_no": 2,
+        "sheet_id": "S2"
+      },
+      {
+        "days": [
+          3,
+          4
+        ],
+        "issue_id": "I2",
+        "labels": [
+          "闰四月2",
+          "五月1"
+        ],
+        "run_no": 3,
+        "sheet_id": "S3"
+      },
+      {
+        "days": [
+          5
+        ],
+        "issue_id": "I4",
+        "labels": [
+          "五月2"
+        ],
+        "run_no": 4,
+        "sheet_id": "S4"
+      }
+    ],
+    "product_id": "CH-A1",
+    "scheduled_days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "signer": "LOCAL",
+    "supersedes": null
+  },
+  "valid_chronologies": [
+    [
+      {
+        "days": [
+          0
+        ],
+        "issue_id": "I0",
+        "labels": [
+          "四月1"
+        ],
+        "run_no": 0,
+        "sheet_id": "S0"
+      },
+      {
+        "days": [
+          1
+        ],
+        "issue_id": "I1",
+        "labels": [
+          "四月2"
+        ],
+        "run_no": 1,
+        "sheet_id": "S1"
+      },
+      {
+        "days": [
+          2
+        ],
+        "issue_id": "I2S",
+        "labels": [
+          "闰四月1"
+        ],
+        "run_no": 2,
+        "sheet_id": "S2"
+      },
+      {
+        "days": [
+          3,
+          4
+        ],
+        "issue_id": "I2",
+        "labels": [
+          "闰四月2",
+          "五月1"
+        ],
+        "run_no": 3,
+        "sheet_id": "S3"
+      },
+      {
+        "days": [
+          5
+        ],
+        "issue_id": "I4",
+        "labels": [
+          "五月2"
+        ],
+        "run_no": 4,
+        "sheet_id": "S4"
+      }
+    ]
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "case": "D 同案保全：整案不登记已到；副片须出示在馆依据",
+  "central_attempt": {
+    "accepted": false,
+    "code": "no_feasible_route",
+    "detail": "hold HD1 protects another member of case CASE-D; whole-case loan blocked (case must not be registered as arrived); surrogate route not offered this month"
+  },
+  "evidence_required": {
+    "I2": {
+      "in_house_at_commit": true,
+      "library": "LOCAL",
+      "provenance": "signed reading-room attestation at shooting time",
+      "surrogate_id": "F-I2"
+    }
+  },
+  "missing_evidence_error": {
+    "code": "no_feasible_route",
+    "detail": "hold HD1 protects another member of case CASE-D; whole-case loan blocked (case must not be registered as arrived); surrogate F-I2: cannot prove the original was in the holding library at shooting time"
+  },
+  "ok": true,
+  "surrogate_work_order": {
+    "assignments": [
+      {
+        "issue_id": "I2",
+        "missing_days": [
+          3,
+          4
+        ],
+        "slot_id": "K1",
+        "slot_kind": "double"
+      }
+    ],
+    "commit_by_day": 12,
+    "feasible": true,
+    "in_house_evidence": {
+      "I2": {
+        "in_house_at_commit": true,
+        "library": "LOCAL",
+        "provenance": "signed reading-room attestation at shooting time",
+        "surrogate_id": "F-I2"
+      }
+    },
+    "occupied_originals": [],
+    "occupied_surrogates": [
+      "F-I2"
+    ],
+    "order_id": "MO-D",
+    "product_id": "CH-D1",
+    "reasons": [],
+    "route": "surrogate",
+    "shoot_by_day": 12,
+    "spare_sheets_used": []
+  }
+}

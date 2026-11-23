@@ -1,0 +1,49 @@
+{
+  "case": "B 历书订正：原两栏再无相邻解释，停止补拍",
+  "day_table": [
+    {
+      "day": 0,
+      "label": "四月1"
+    },
+    {
+      "day": 1,
+      "label": "四月2"
+    },
+    {
+      "day": 2,
+      "label": "闰四月1"
+    },
+    {
+      "day": 3,
+      "label": "闰四月2"
+    },
+    {
+      "day": 4,
+      "label": "四月后小月1"
+    },
+    {
+      "day": 5,
+      "label": "五月1"
+    },
+    {
+      "day": 6,
+      "label": "五月2"
+    }
+  ],
+  "ok": true,
+  "order_error": {
+    "code": "no_chronology",
+    "detail": "合刊在订正历书下无相邻两应刊日"
+  },
+  "sheets_that_cannot_be_catalogued": [
+    {
+      "bad_columns": [],
+      "combined": true,
+      "detail": "the two mastheads no longer correspond to two adjacent scheduled days",
+      "issue_id": "I2",
+      "reason": "no_adjacent_scheduled_pair",
+      "sheet_id": "S3"
+    }
+  ],
+  "valid_chronology_count": 0
+}

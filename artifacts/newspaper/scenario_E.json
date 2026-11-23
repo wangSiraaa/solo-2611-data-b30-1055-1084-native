@@ -1,0 +1,227 @@
+{
+  "case": "E 迟到重读：原件可取晚等待；有号副片不跨卷复用",
+  "central_work_order": {
+    "assignments": [
+      {
+        "issue_id": "I2",
+        "missing_days": [
+          3,
+          4
+        ],
+        "slot_id": "K1",
+        "slot_kind": "double"
+      }
+    ],
+    "commit_by_day": 11,
+    "feasible": true,
+    "in_house_evidence": null,
+    "occupied_originals": [
+      "I2"
+    ],
+    "occupied_surrogates": [],
+    "order_id": "MO-E",
+    "product_id": "CH-E1",
+    "reasons": [],
+    "route": "central",
+    "shoot_by_day": 11,
+    "spare_sheets_used": []
+  },
+  "historical_product_kept": {
+    "almanac_id": "AL-XIAOLI",
+    "almanac_revision": 1,
+    "as_of_day": 12,
+    "catalog_revision": 1,
+    "digest": "f40b76b372cf517b3b49e3b7e4c6bb418fe0f32de56bf4c83a6b8c2cad8da12b",
+    "note": "重读未收敛前的旧签（保留当时依据）",
+    "placements": [
+      {
+        "days": [
+          0
+        ],
+        "issue_id": "I0",
+        "labels": [
+          "四月1"
+        ],
+        "run_no": 0,
+        "sheet_id": "S0"
+      },
+      {
+        "days": [
+          1
+        ],
+        "issue_id": "I1",
+        "labels": [
+          "四月2"
+        ],
+        "run_no": 1,
+        "sheet_id": "S1"
+      },
+      {
+        "days": [
+          2
+        ],
+        "issue_id": "I2S",
+        "labels": [
+          "闰四月1"
+        ],
+        "run_no": 2,
+        "sheet_id": "S2"
+      },
+      {
+        "days": [
+          3,
+          4
+        ],
+        "issue_id": "I2",
+        "labels": [
+          "闰四月2",
+          "五月1"
+        ],
+        "run_no": 3,
+        "sheet_id": "S3"
+      },
+      {
+        "days": [
+          5
+        ],
+        "issue_id": "I4",
+        "labels": [
+          "五月2"
+        ],
+        "run_no": 4,
+        "sheet_id": "S4"
+      }
+    ],
+    "product_id": "CH-E0",
+    "scheduled_days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "signer": "LOCAL",
+    "supersedes": null
+  },
+  "new_product": {
+    "almanac_id": "AL-XIAOLI",
+    "almanac_revision": 1,
+    "as_of_day": 12,
+    "catalog_revision": 1,
+    "digest": "6843ad878f120671be8b690f357109b6444cf155eaf22a5a528fcf7fc2dec4ea",
+    "note": "馆方迟到重读后收敛的新签",
+    "placements": [
+      {
+        "days": [
+          0
+        ],
+        "issue_id": "I0",
+        "labels": [
+          "四月1"
+        ],
+        "run_no": 0,
+        "sheet_id": "S0"
+      },
+      {
+        "days": [
+          1
+        ],
+        "issue_id": "I1",
+        "labels": [
+          "四月2"
+        ],
+        "run_no": 1,
+        "sheet_id": "S1"
+      },
+      {
+        "days": [
+          2
+        ],
+        "issue_id": "I2S",
+        "labels": [
+          "闰四月1"
+        ],
+        "run_no": 2,
+        "sheet_id": "S2"
+      },
+      {
+        "days": [
+          3,
+          4
+        ],
+        "issue_id": "I2",
+        "labels": [
+          "闰四月2",
+          "五月1"
+        ],
+        "run_no": 3,
+        "sheet_id": "S3"
+      },
+      {
+        "days": [
+          5
+        ],
+        "issue_id": "I4",
+        "labels": [
+          "五月2"
+        ],
+        "run_no": 4,
+        "sheet_id": "S4"
+      }
+    ],
+    "product_id": "CH-E1",
+    "scheduled_days": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "signer": "LOCAL",
+    "supersedes": "CH-E0"
+  },
+  "ok": true,
+  "spare_sheet_work_order": {
+    "assignments": [
+      {
+        "issue_id": "I2",
+        "missing_days": [
+          3,
+          4
+        ],
+        "slot_id": "K1",
+        "slot_kind": "double"
+      }
+    ],
+    "commit_by_day": 11,
+    "feasible": true,
+    "in_house_evidence": {
+      "I2": {
+        "in_house_at_commit": true,
+        "library": "LOCAL",
+        "provenance": "signed reading-room attestation at shooting time",
+        "surrogate_id": "F-I2-SPARE"
+      }
+    },
+    "occupied_originals": [],
+    "occupied_surrogates": [
+      "F-I2-SPARE"
+    ],
+    "order_id": "MO-E-SPARE",
+    "product_id": "CH-E1",
+    "reasons": [],
+    "route": "surrogate",
+    "shoot_by_day": 11,
+    "spare_sheets_used": []
+  },
+  "transit_conflict": {
+    "code": "no_feasible_route",
+    "detail": "original unavailable in reader blackout / transit on day 11; surrogate route not offered this month"
+  },
+  "wrong_surrogate_error": {
+    "code": "no_feasible_route",
+    "detail": "central route not offered this month; no spare numbered surrogate left for issue I2"
+  }
+}
