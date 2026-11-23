@@ -1,0 +1,34 @@
+{
+  "catalog_file": "catalog.json",
+  "coverage_file": "coverage.json",
+  "note": "Zoning change: after the bin was lent, S1 house 5 is re-covered from ST1 to ST2. The original lending stays at the old station ST1 (frozen); a fresh submission resolves to ST2, but a recycling scan naming the new station is a station_mismatch against the current lending.",
+  "bins": [
+    {
+      "bin_id": "B1",
+      "lend": {"city_id": "C1", "district_text": "东", "street_text": "东路", "house_no": 5},
+      "events": [
+        {"kind": "fill", "material": "paper", "weight": 2},
+        {"kind": "return", "station_id": "ST2"}
+      ]
+    }
+  ],
+  "revision": {
+    "revision": "z2",
+    "operations": [
+      {"op": "remove_coverage", "coverage_id": "K1"},
+      {"op": "add_coverage", "coverage_id": "K7", "street_id": "S1", "station_id": "ST2", "lo": 1, "hi": 20, "parity": "any"}
+    ]
+  },
+  "probes": [
+    {"parcel_id": "PZ", "city_id": "C1", "district_text": "东", "street_text": "东路", "house_no": 5}
+  ],
+  "route": ["ST1"],
+  "compartments": [
+    {"compartment_id": "P", "capacity": 2, "accepts": ["paper"]}
+  ],
+  "station_rules": {"ST1": {"max_weight": 2, "allowed_grades": ["paper"]}},
+  "committed_stations": ["ST1"],
+  "method_a_terms": [
+    {"bin_id": "B1", "compartment_id": "P", "issued_grade": "paper"}
+  ]
+}

@@ -30,6 +30,8 @@ from pathlib import Path
 from .catalog import Catalog
 from .db import connect
 from .errors import CatalogError, InputFormatError
+from .recycling import RecyclingLedger
+from .scenarios import load_scenario, run as run_scenario
 from .service import AddressService
 
 
@@ -193,6 +195,31 @@ def cmd_catalog(args) -> int:
     return 0
 
 
+def cmd_scenario(args) -> int:
+    """Run a synthetic recycling scenario and print both planning methods."""
+    scenario = load_scenario(args.path)
+    result = run_scenario(scenario)
+    if args.only:
+        result = {args.only: result[args.only]} if args.only in result else result
+    _dump(result)
+    return 0
+
+
+def cmd_bin_explain(args) -> int:
+    """Explain a named bin's turnover from an existing database."""
+    service = _open_service(args.db)
+    try:
+        ledger = RecyclingLedger(service)
+        report = ledger.explain(args.bin_id)
+        if not report["applied_events"] and not report["rejected_events"]:
+            _dump({"error": "unknown_bin", "bin_id": args.bin_id})
+            return 4
+        _dump(report)
+    finally:
+        service.close()
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="address_delivery")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -263,6 +290,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--district")
     p.add_argument("--street")
     p.set_defaults(func=cmd_catalog)
+
+    p = sub.add_parser("scenario", help="run a synthetic recycling scenario")
+    p.add_argument("path")
+    p.add_argument("--only", choices=["method_a", "method_b", "reservation_proof"])
+    p.set_defaults(func=cmd_scenario)
+
+    p = sub.add_parser("bin-explain", help="explain a named bin's turnover")
+    p.add_argument("--db", required=True)
+    p.add_argument("bin_id")
+    p.set_defaults(func=cmd_bin_explain)
 
     return parser
 

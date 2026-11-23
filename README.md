@@ -28,7 +28,70 @@ python3 -m address_delivery job --db /tmp/a.db P2
 python3 -m address_delivery catalog --db /tmp/a.db street --id S2
 ```
 
-测试：`python3 -m unittest discover -s tests`（78 项，覆盖下述全部场景）。
+测试：`python3 -m unittest discover -s tests`（123 项，覆盖下述全部场景）。
+
+# 回收周转与收运（`recycling.py` / `truck.py` / `scenarios.py`）
+
+在既有离线投递仓之上，为每只**具名桶**建立周转履历，并把收运装舱与到厂分级
+做成可执行、可复算的合成场景。
+
+```bash
+# 运行全部合成场景（两法对比）
+python3 examples/replay_recycling.py
+python3 -m address_delivery scenario scenarios/late_planning.json --only method_b
+```
+
+## 桶的周转履历（`recycling.py`）
+
+- **发送单须成功**：`RecyclingLedger.lend()` 调 `AddressService.submit_new`，
+  业务失败（未知街道、站点歧义等）抛 `LendError`，不开借出；成功则记录**作业冻结**
+  的街/门牌/站，之后不再重解析。
+- **扫码须在当前借出地址**：`fill`/`return` 必须带**当前**借出标号且站一致。
+  `stale_tag`（上轮旧签）、`station_mismatch`（非当前站）、`duplicate_fill`（未归还重复装填）、
+  `early_return`（未装填先归还）、`duplicate_return` 全部拒绝。
+- **事件按原始次序复查**：事件有逻辑 `seq`（同序用插入序），补记/错扫按
+  `seq` 复算，而不是按录入时间。
+- **清洁两道工序**：`empty` 先清空、`dry` 后烘干才清除湿残留；只有 `empty` 时湿杂
+  残留保留。`dry` 早于 `empty` 记 `out_of_order`；`certificate` 是烘干证明，须有
+  在先的 `empty`，否则 `certificate_without_empty`。
+- **纸遇湿残留整桶归湿杂**：有湿残留时装干纸 → 整桶 `wet_mixed`；倒空过湿杂的桶保留湿残留。
+- **玻璃可回收但不清除旧残留**：可装玻璃并按玻璃交，但残留（及其原因）保留到下一轮。
+- `explain(bin_id)` 独立解释本轮实收重量、料级、上轮残留原因，并列出已应用/被拒事件。
+
+## 车场、隔舱与到厂分级（`truck.py`）
+
+- **车场装一次、开车锁死**：`Truck.fit_partition()` 只能在发车前调用一次；
+  `depart()` 后任何改装抛 `PartitionLockedError`。
+- **到厂分级（逐舱）**：任一 `wet_mixed` → 整舱混杂；干纸与玻璃同舱 → 整舱混杂；
+  否则单一料级仅在登记线接收时保留，否则降级混杂。**各厂线只接登记料级**。
+- **称量单**：`weighing_slip` 分别结出合格纸、合格玻璃、混杂重量。
+- **一桶一次倒完、不许拆开**：桶整体装入单一舱；容量不足则不装（`mandatory`
+  桶不能留，否则计划不可行）。
+- **每站全收或明确留桶**：`stations[].completed` 表示该站全收且满足站的重量/料级组合。
+
+### 两法
+
+- **甲法 `plan_with_partition`（发车前指定舱 + 备用条款）**：车场按桶指定舱与
+  备用条款，司机离线照条款放行；当舱/条款不再适应当前料级（如补办烘干证明后
+  由湿杂变纸）时列入 `reissue_needed`，须换发已发用舱条款。
+- **乙法 `plan_late`（只锁隔板与各站组合，晚决定）**：只锁隔板与每站允许的
+  重量/料级组合，司机见到真实桶级再共舱。目标按字典序：**先最多完成已承诺整站，
+  再合格料重量最大**。`prove_early_capacity()` 先给后站预留舱重，再用残余容量复算
+  前站，证明前站自由不会占掉后站已许的舱。
+- 两法都只收录已完成的倒桶（`mandatory` 桶不可留）。
+
+## 合成场景（`scenarios/`）
+
+| 场景 | 要点 |
+| --- | --- |
+| `canonical` | 纸2、玻璃1；原图专用纸舱2/玻璃舱1；厂只收合格纸/玻璃，无湿杂上车 |
+| `clean_proven` | 上轮湿残留，本轮先清空再烘干，两站都收 |
+| `certificate_withdrawn` | 撤烘干 → 纸归湿杂，只能收玻璃；甲法换发纸舱条款 |
+| `locked_paper1_glass2` | 沿用原干料单，仅改锁死纸1/玻璃2；纸桶不可拆 → 只能收玻璃 |
+| `mix_downgrade` | 允许混舱但到厂降级为混杂 |
+| `zoning_change` | 改站后新提交到新站，但原借出单仍在旧站，扫码按旧站判 mismatch |
+| `late_planning` | 5站/7桶/3舱，五站全完成，乙法+预留证明 |
+| `reissue_certificate` | 补办烘干证明 → 甲法换发舱条款，乙法晚决定 |
 
 ## 结构
 
@@ -39,6 +102,9 @@ python3 -m address_delivery catalog --db /tmp/a.db street --id S2
 | `delivery.py` | 独立投递作业库：尝试、原子提交、身份冻结、历史 |
 | `service.py` | 共享一个连接的组合入口（目录只读 + 作业写入同一事务） |
 | `input.py` | CSV 与 `address-input/v1` 的结构校验 |
+| `recycling.py` | 具名桶周转履历：借出冻结、扫码规则、清洁/残留复算 |
+| `truck.py` | 隔舱、车场装一次锁死、到厂分级、甲/乙两法与预留证明 |
+| `scenarios.py` | 读合成场景、建目录/桶、推导车内桶、跑两法 |
 | `cli.py` | 命令行 |
 
 **目录与作业彼此独立**：`Catalog` 只建目录表，`DeliveryStore` 只建

@@ -23,29 +23,52 @@ from .input import (
 )
 from .models import AddressInput, validate_address_input
 from .normalization import make_identity, normalize_text
+from .recycling import LendError, Lending, RecyclingLedger, replay_events
 from .service import AddressService
+from .truck import (
+    Bin,
+    Compartment,
+    Truck,
+    bins_from_manifest,
+    make_bin,
+    plan_late,
+    plan_with_partition,
+    prove_early_capacity,
+)
 
 __all__ = [
     "AddressInput",
     "AddressService",
     "AttemptResult",
     "BatchResult",
+    "Bin",
     "Catalog",
     "CatalogError",
+    "Compartment",
     "CoverageHit",
     "DeliveryError",
     "DeliveryStore",
     "InputFormatError",
+    "LendError",
+    "Lending",
+    "RecyclingLedger",
     "Resolution",
     "StreetCandidate",
+    "Truck",
     "address_input_document",
+    "bins_from_manifest",
+    "make_bin",
     "make_identity",
     "normalize_text",
     "parse_address_input_document",
     "parse_csv_text",
+    "plan_late",
+    "plan_with_partition",
+    "prove_early_capacity",
     "read_address_input_json",
     "read_csv_addresses",
+    "replay_events",
     "validate_address_input",
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"

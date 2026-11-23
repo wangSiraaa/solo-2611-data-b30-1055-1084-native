@@ -1,0 +1,10 @@
+{
+  "revision": "z1",
+  "coverages": [
+    {"coverage_id": "K1", "street_id": "S1", "station_id": "ST1", "lo": 1, "hi": 20, "parity": "any"},
+    {"coverage_id": "K2", "street_id": "S2", "station_id": "ST2", "lo": 1, "hi": 20, "parity": "any"},
+    {"coverage_id": "K3", "street_id": "S3", "station_id": "ST3", "lo": 1, "hi": 20, "parity": "any"},
+    {"coverage_id": "K4", "street_id": "S4", "station_id": "ST4", "lo": 1, "hi": 20, "parity": "any"},
+    {"coverage_id": "K5", "street_id": "S5", "station_id": "ST5", "lo": 1, "hi": 20, "parity": "any"}
+  ]
+}

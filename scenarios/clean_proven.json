@@ -1,0 +1,38 @@
+{
+  "catalog_file": "catalog.json",
+  "coverage_file": "coverage.json",
+  "note": "B1 has wet residue carried from the previous round. This round it is proven cleaned: empty THEN dry, then dry paper loads clean. Both stations collect.",
+  "bins": [
+    {
+      "bin_id": "B1",
+      "initial_wet_residue": true,
+      "residue_reason": "previous_round",
+      "lend": {"city_id": "C1", "district_text": "东", "street_text": "东路", "house_no": 5},
+      "events": [
+        {"kind": "fill", "material": "paper", "weight": 2},
+        {"kind": "empty"},
+        {"kind": "dry"},
+        {"kind": "fill", "material": "paper", "weight": 2}
+      ]
+    },
+    {
+      "bin_id": "B2",
+      "lend": {"city_id": "C1", "district_text": "东", "street_text": "柳街", "house_no": 4},
+      "events": [{"kind": "fill", "material": "glass", "weight": 1}]
+    }
+  ],
+  "route": ["ST1", "ST2"],
+  "compartments": [
+    {"compartment_id": "P", "capacity": 2, "accepts": ["paper"]},
+    {"compartment_id": "G", "capacity": 1, "accepts": ["glass"]}
+  ],
+  "station_rules": {
+    "ST1": {"max_weight": 2, "allowed_grades": ["paper"]},
+    "ST2": {"max_weight": 1, "allowed_grades": ["glass"]}
+  },
+  "committed_stations": ["ST1", "ST2"],
+  "method_a_terms": [
+    {"bin_id": "B1", "compartment_id": "P", "issued_grade": "paper"},
+    {"bin_id": "B2", "compartment_id": "G", "issued_grade": "glass"}
+  ]
+}

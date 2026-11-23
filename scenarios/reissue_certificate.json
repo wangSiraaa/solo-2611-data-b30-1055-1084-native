@@ -1,0 +1,36 @@
+{
+  "catalog_file": "catalog.json",
+  "coverage_file": "coverage.json",
+  "note": "The depot issued B1 a wet-mixing term (issued_grade wet_mixed). A late drying certificate (empty then certificate) proves it clean and it is refilled with paper, so the issued term no longer matches and must be re-issued. Method B simply decides late.",
+  "bins": [
+    {
+      "bin_id": "B1",
+      "initial_wet_residue": true,
+      "residue_reason": "previous_round",
+      "lend": {"city_id": "C1", "district_text": "东", "street_text": "东路", "house_no": 5},
+      "events": [
+        {"kind": "fill", "material": "paper", "weight": 2},
+        {"kind": "empty"},
+        {"kind": "certificate"},
+        {"kind": "fill", "material": "paper", "weight": 2}
+      ]
+    },
+    {
+      "bin_id": "B2",
+      "lend": {"city_id": "C1", "district_text": "东", "street_text": "柳街", "house_no": 4},
+      "events": [{"kind": "fill", "material": "glass", "weight": 1}]
+    }
+  ],
+  "route": ["ST1", "ST2"],
+  "compartments": [
+    {"compartment_id": "X", "capacity": 5, "accepts": ["paper", "glass"], "mix_permitted": true},
+    {"compartment_id": "G", "capacity": 1, "accepts": ["glass"]}
+  ],
+  "station_rules": {},
+  "committed_stations": ["ST1", "ST2"],
+  "prove_split": "ST2",
+  "method_a_terms": [
+    {"bin_id": "B1", "compartment_id": "X", "issued_grade": "wet_mixed"},
+    {"bin_id": "B2", "compartment_id": "G", "issued_grade": "glass"}
+  ]
+}

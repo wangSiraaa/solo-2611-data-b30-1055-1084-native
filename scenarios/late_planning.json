@@ -1,0 +1,36 @@
+{
+  "catalog_file": "catalog.json",
+  "coverage_file": "coverage.json",
+  "note": "Late planning over 5 stations / 8 bins / 3 compartments. Later stations ST3-ST5 exactly fill the dedicated paper and glass lines; early stations ST1-ST2 can still complete both stations using the residual mixing compartment, so the reservation proof holds.",
+  "bins": [
+    {"bin_id": "B1", "lend": {"city_id": "C1", "district_text": "东", "street_text": "东路", "house_no": 5},
+     "events": [{"kind": "fill", "material": "paper", "weight": 2}]},
+    {"bin_id": "B2", "lend": {"city_id": "C1", "district_text": "东", "street_text": "柳街", "house_no": 4},
+     "events": [{"kind": "fill", "material": "glass", "weight": 1}]},
+    {"bin_id": "B3", "lend": {"city_id": "C1", "district_text": "东", "street_text": "园路", "house_no": 3},
+     "events": [{"kind": "fill", "material": "paper", "weight": 1}]},
+    {"bin_id": "B4", "lend": {"city_id": "C1", "district_text": "东", "street_text": "槐路", "house_no": 2},
+     "events": [{"kind": "fill", "material": "glass", "weight": 2}]},
+    {"bin_id": "B5", "lend": {"city_id": "C1", "district_text": "东", "street_text": "湖街", "house_no": 1},
+     "events": [{"kind": "fill", "material": "paper", "weight": 2}]},
+    {"bin_id": "B6", "lend": {"city_id": "C1", "district_text": "东", "street_text": "湖街", "house_no": 6},
+     "events": [{"kind": "fill", "material": "glass", "weight": 1}]},
+    {"bin_id": "B7", "lend": {"city_id": "C1", "district_text": "东", "street_text": "东路", "house_no": 7},
+     "events": [{"kind": "fill", "material": "paper", "weight": 1}]}
+  ],
+  "route": ["ST1", "ST2", "ST3", "ST4", "ST5"],
+  "compartments": [
+    {"compartment_id": "P", "capacity": 3, "accepts": ["paper"]},
+    {"compartment_id": "G", "capacity": 3, "accepts": ["glass"]},
+    {"compartment_id": "X", "capacity": 4, "accepts": ["paper", "glass"], "mix_permitted": true}
+  ],
+  "station_rules": {
+    "ST1": {"max_weight": 3},
+    "ST2": {"max_weight": 1},
+    "ST3": {"max_weight": 2},
+    "ST4": {"max_weight": 2},
+    "ST5": {"max_weight": 3}
+  },
+  "committed_stations": ["ST1", "ST2", "ST3", "ST4", "ST5"],
+  "prove_split": "ST3"
+}
