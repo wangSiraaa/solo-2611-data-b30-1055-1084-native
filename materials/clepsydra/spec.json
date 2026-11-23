@@ -1,0 +1,30 @@
+{
+  "case_id": "C-W",
+  "scale": 3,
+  "beats": 3,
+  "original_inflows": [1, 1, 1],
+  "copies": [
+    {
+      "copy_id": "COPY-A",
+      "name": "COPY-A",
+      "institution": "OLD",
+      "entries": [
+        {"inflow": 1, "ring": false},
+        {"inflow": 1, "ring": false},
+        {"inflow": 1, "ring": true}
+      ],
+      "directions": [{"0": 0, "1": 1, "2": 2}],
+      "initial_span": [0, 0]
+    },
+    {
+      "copy_id": "FRAG-B",
+      "name": "FRAG-B",
+      "institution": "OLD",
+      "entries": [
+        {"inflow": 1, "ring": false},
+        {"inflow": 1, "ring": true}
+      ],
+      "directions": [{"0": 0, "1": 1}, {"0": 1, "1": 2}]
+    }
+  ]
+}

@@ -10,6 +10,9 @@ archive_handoff/
   handoff_service.py # 整案移交仓：保管责任、整案校验、准备/确认/计划、对账
   materials.py       # 只读导入 materials/751 或任意同布局目录
   scenario.py        # 文档化 751 走查、operations 回放、200/10/500/100 规模生成
+  clepsydra.py       # 漏刻示意引擎：单次走针、同更联合校读、展台复现规划
+  clepsydra_case.py  # 带保管门禁的漏刻案卷：正式/暂定读数、重签、整案到馆才转正
+  clepsydra_scenario.py # 文档化漏刻校读/复现走查（run_clepsydra_demo）
   cli.py             # 命令行
 tests/               # unittest（无需 pytest）
 ```
@@ -91,9 +94,36 @@ python3 -m archive_handoff.cli --data $DATA verify
 
 # 规模数据：200 档案 / 10 规则 / 500 事件+保全 / 100 请求（生成+校验+重开）
 python3 -m archive_handoff.cli --data artifacts/scale scale
+
+# 漏刻校读/复现文档化走查（写出 clepsydra_demo.json）
+python3 -m archive_handoff.cli --data artifacts/clepsydra clepsydra
+
+# 按 JSON 规格联合校读一个漏刻案卷（联合解 + 响/静判定）
+python3 -m archive_handoff.cli --data artifacts/clepsydra collate --spec materials/clepsydra/spec.json
 ```
 
 移交请求是“公开写全”的普通 JSON，可存成文件再用 `requests --file` 实际导入。
+
+## 漏刻校读与展台复现（clepsydra）
+
+示意漏刻只有一个整数水斗与一条整数刻线 `scale`。每拍先添水（`1..scale-1`
+或停流记号 `STOP=0`），达到刻线即响一次、倒出 `scale`，余量留下；单拍自然来水
+恒小于刻线，故水位始终在 `[0, scale)`。观测取**拍首**水位（本拍添水之前），
+因此第 0 拍观测值就是开场水量。
+
+- **联合校读**（`explain`）：各抄本按题内列出的接页方向绑定到绝对拍位；错接残页
+  只择其一。按“方向顺序→初值升序→逐拍水量升序”取规范解，留下初值、方向与每拍水量。
+  `possible_ring_patterns` / `determined_beats` 给出哪些拍响、哪些仍有分歧。
+- **展台复现**（`plan_fixed_cups` / `plan_adaptive`）：展台有自己的逐拍进水表，只知
+  开场水量区间（同一肉眼档内的整数初值不可区分）。固定杯单须对档内**所有**初值
+  奏准；也可用读尺闸自适应（闸拍天然停流、同拍不得再加杯）。仍有分歧的拍**只交代、
+  不定史实**：要求证实时会拒绝该方案。
+- **开场标定杯**真实入斗、占库存，故其后响铃时点须按**加过后**的水量重算；读尺闸
+  则把该拍真实记为停流，不能用原表“多走一拍水”假装正确。
+- **保管门禁**（`WaterClockCase`）：只有**当下持整案且确有移交触发**的馆，其读数才
+  为 `formal`；仅接到一册者只能先记 `provisional`，不得以此删去他本停流记号，演出
+  仍需那只杯。原馆复核只能**重签旧读**；待整案实际到馆（`promote_pending`）后才把
+  暂定读数转正、方可撤杯。此门禁只读 `HandoffRepo` 的保管链，不重算日期。
 
 ## 测试
 
@@ -103,4 +133,6 @@ python3 -m unittest discover -s tests -v
 
 覆盖：日期算术与边界、缺触发待定、保全半开区间与不暂停时钟、多阻止原因去重、
 批次原子拒绝、产品冻结、整案校验、部分拒绝、复读/异文、保管链与重开对账、
-751 文档化走查、operations 回放、200/10/500/100 规模。
+751 文档化走查、operations 回放、200/10/500/100 规模；漏刻走针/倒余、接页方向
+择一、联合校读、分歧披露、固定杯单与自适应闸、开场标定陷阱与真实停流、
+“须多等一拍才安全”、同档不可暗分、暂定读数/重签/整案到馆转正。

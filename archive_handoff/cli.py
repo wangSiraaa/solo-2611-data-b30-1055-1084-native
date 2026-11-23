@@ -310,6 +310,61 @@ def cmd_operations(args) -> None:
         raise SystemExit(1)
 
 
+def cmd_clepsydra(args) -> None:
+    """Run the documented water-clock collation/reproduction walkthrough."""
+    from .clepsydra_scenario import run_clepsydra_demo
+
+    result = run_clepsydra_demo(args.data)
+    _dump(result)
+    if not result.get("ok"):
+        raise SystemExit(1)
+
+
+def cmd_collate(args) -> None:
+    """Collate a water-clock case from a JSON spec.
+
+    The spec has ``scale``, ``beats``, ``original_inflows`` and a ``copies``
+    list; each copy names its ``entries`` (``inflow``/``ring``/``obs``) and its
+    ``directions`` (lists of ``[local, absolute]`` pairs).  Prints the joint
+    solution and the determined/disputed ring beats.
+    """
+    from .clepsydra import Entry, Witness, explain, determined_beats, \
+        possible_ring_patterns
+    from .clepsydra_case import LogCopy, WaterClockCase
+
+    with open(args.spec, encoding="utf-8") as fh:
+        spec = json.load(fh)
+    case = WaterClockCase(spec["case_id"], spec["scale"], spec["beats"],
+                          spec["original_inflows"])
+    for c in spec.get("copies", []):
+        entries = [
+            Entry(inflow=e.get("inflow"), ring=e.get("ring"),
+                  obs=tuple(e.get("obs", ())))
+            for e in c["entries"]
+        ]
+        directions = [
+            {int(k): int(v) for k, v in d.items()} for d in c["directions"]
+        ]
+        witness = Witness(c.get("name", c.get("copy_id", "copy")), entries,
+                          directions,
+                          tuple(c["initial_span"]) if "initial_span" in c else None)
+        case.add_copy(LogCopy(c.get("copy_id", c.get("name", "copy")),
+                              c.get("institution", "LOCAL"), witness))
+    sol = case.collate()
+    analysis = case.ring_analysis()
+    _dump({
+        "case_id": case.case_id,
+        "solution": None if sol is None else sol.as_dict(),
+        "ring_analysis": {
+            "patterns": [list(p) for p in analysis["patterns"]],
+            "determined": analysis["determined"],
+            "disputed": analysis["disputed"],
+        },
+    })
+    if sol is None:
+        raise SystemExit(2)
+
+
 def cmd_requests(args) -> None:
     """Submit a JSONL file of fully-specified handoff requests.
 
@@ -419,6 +474,14 @@ def build_parser() -> argparse.ArgumentParser:
     sp = sub.add_parser("operations")
     sp.add_argument("--materials", default="materials/751")
     sp.set_defaults(func=cmd_operations)
+
+    sp = sub.add_parser("clepsydra")
+    sp.set_defaults(func=cmd_clepsydra)
+
+    sp = sub.add_parser("collate")
+    sp.add_argument("--spec", required=True,
+                    help="JSON water-clock case spec (see cmd_collate)")
+    sp.set_defaults(func=cmd_collate)
 
     sp = sub.add_parser("requests")
     sp.add_argument("--file", required=True)
