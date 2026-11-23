@@ -1,0 +1,160 @@
+{
+  "cases": {
+    "case_full_work_order": {
+      "expected": {
+        "S80_signs": true,
+        "S80_slot_listed": true,
+        "S81_signs": true,
+        "S82_refused_torn": true
+      },
+      "ok": true
+    },
+    "case_held_member_blocks_proof": {
+      "expected": {
+        "C1_not_wholly_held": true,
+        "C2_wholly_held": true,
+        "C3_not_wholly_held": true,
+        "free_case_signs": true,
+        "held_case_refused": true
+      },
+      "ok": true
+    },
+    "case_pattern_ok_no_slot_film_approval": {
+      "expected": {
+        "catch_frame_refused": true,
+        "film_approval_available": true,
+        "film_signs": true,
+        "pattern_correct": true
+      },
+      "ok": true
+    },
+    "case_plan_only_cannot_depose": {
+      "expected": {
+        "custody_unchanged": true,
+        "fake_handoff_refused": true,
+        "new_signer_rejected": true,
+        "old_reading_survives": true,
+        "plan_only_ignored": true
+      },
+      "ok": true
+    },
+    "case_regrind_explains_notch": {
+      "expected": {
+        "regrind_explains_signs": true,
+        "unevidenced_regrind_rejected": true,
+        "unexplained_without_evidence": true
+      },
+      "ok": true
+    },
+    "case_restore_and_locked_slot": {
+      "expected": {
+        "appraisal_still_valid_when_locked": true,
+        "appraisal_valid": true,
+        "locked_slot_refuses_proof": true,
+        "prints_L_missing": true,
+        "restore_reinstate_signs": true
+      },
+      "ok": true
+    },
+    "case_right_patch_signable": {
+      "expected": {
+        "prints_L_missing": true,
+        "prints_R_complete": true,
+        "reread_makes_R_only_insufficient": true,
+        "signable": true
+      },
+      "ok": true
+    },
+    "case_single_sheet_original_judgment": {
+      "expected": {
+        "only_ticket_pieces": true,
+        "printed_keeps_L_missing": true,
+        "signs": true
+      },
+      "ok": true
+    },
+    "case_torn_spanning_regrind": {
+      "expected": {
+        "L_still_signed_off": true,
+        "torn_R_unverifiable_both_days": true,
+        "torn_not_complete": true,
+        "torn_not_missing": true
+      },
+      "ok": true
+    },
+    "case_two_runs_single_piece": {
+      "expected": {
+        "film_sheet1_signs": true,
+        "film_sheet2_blocked_no_second_piece": true,
+        "run50_signs": true,
+        "run51_blocked_without_swap": true,
+        "run51_signs_after_swap": true
+      },
+      "ok": true
+    }
+  },
+  "chosen_craft": "catch_frame (mountable, reusable piece; film only via independent approval)",
+  "coordinate_table": "P751",
+  "full_work_order_sheets": [
+    {
+      "mounts": [
+        "P-R"
+      ],
+      "refusals": [],
+      "run": 80,
+      "sheet": "S80",
+      "signable": true
+    },
+    {
+      "mounts": [
+        "P-L",
+        "P-R"
+      ],
+      "refusals": [],
+      "run": 81,
+      "sheet": "S81",
+      "signable": true
+    },
+    {
+      "mounts": [],
+      "refusals": [
+        {
+          "kind": "unverifiable",
+          "point": "R"
+        }
+      ],
+      "run": 82,
+      "sheet": "S82",
+      "signable": false
+    }
+  ],
+  "ok": true,
+  "points": [
+    "L",
+    "R",
+    "C",
+    "U",
+    "D",
+    "F",
+    "G",
+    "H"
+  ],
+  "refused_samples": [
+    {
+      "mounts": [],
+      "refusals": [
+        {
+          "kind": "unverifiable",
+          "point": "R"
+        }
+      ],
+      "run": 82,
+      "sheet": "S82",
+      "signable": false
+    }
+  ],
+  "signable_samples": [
+    "S80",
+    "S81"
+  ]
+}

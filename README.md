@@ -104,3 +104,57 @@ python3 -m unittest discover -s tests -v
 覆盖：日期算术与边界、缺触发待定、保全半开区间与不暂停时钟、多阻止原因去重、
 批次原子拒绝、产品冻结、整案校验、部分拒绝、复读/异文、保管链与重开对账、
 751 文档化走查、operations 回放、200/10/500/100 规模。
+
+## 校印工单（plate_proofing）
+
+`plate_proofing/` 是在上面的档案/移交语义之上另写的一层**校印工单**，用石版工坊
+的术语描述同一套时间与整案规则，并加上补版（补片）/夹位/定位脚/补版膜与必核点。
+它不重算日期、不判保管：`custody_ok` 与持馆由 `HandoffRepo` 结果传入。
+
+术语对照：
+
+| 工坊说法 | 档案语义 | 本层 |
+|---|---|---|
+| 石版 / 原版 | case / plate | — |
+| 点 / 缺口 | document / 不可印 | `plate_state` |
+| 印次 | 有序的 `as_of_day` | `Reading.run` |
+| 鉴定 / 读法 | 冻结的资格产品 | `Reading` |
+| 持馆 | custodian | `Reading.custodian` |
+| 重磨 | 有凭据的整面重磨 | `Regrind`（必须有 `evidence_id`） |
+| 补版 / 补片 | 修正件 | `Patch` |
+| 夹位 / 定位脚 | 槽位 / 针脚 | `Patch.slot` / `Patch.pins` |
+| 补版膜 | 一次性永久膜 | `Patch(film=True)` |
+| 必核点 | 合同必核点 | `PlateWorkOrder.must_check` |
+
+关键规则（均有测试）：
+
+- **纸角缺失 ≠ 此处印全 ≠ 缺口**：`TORN` 单独登记，永远不折叠成 `COMPLETE`/`MISSING`；
+  只有撕角见证的必核点记为 `unverifiable`。
+- **旧缺口只会在有凭据的整面重磨后消失**：`explain_transitions()` 逐点按印次排序检查，
+  任何 `MISSING→COMPLETE` 若中间没有 `evidence_id` 的 `Regrind` 即报
+  `unexplained_transition`；无凭据重磨在登记时直接拒（`unevidenced_regrind`）。
+- **未确认的移交预案不能替持馆签原样**：`plan_only` 读法权威低于持馆读法，
+  永远不能 `supersede` 持馆签样；用它签名会得到 `signer_not_custodian`。
+- **案中另件受保时不视为整案借到**：`custody_ok=False`（含缺到期触发的成员）时
+  一律 `custody_incomplete` 拒签。
+- **同一夹位只装一片，两片相压不得同装**；**不扫码确认拆掉时仍占脚**——
+  同一实片借给另一张必须先 `release` 且 `scan_release_confirmed=True`。
+- **夹脚位改作机台锁死**：`locked_slots`/`locked_pins` 下鉴定照常有效，但校样被
+  `slot_locked`/`pin_locked` 拒签。
+- **贴膜**：不用脚位，但每贴一片永久耗掉该片与所覆原点重印权（`film_spent` /
+  `origin_consumed`）；实际贴膜前可对候选区给独立承诺（`approve_film`）。
+- 上限：最多 **8 处点、12 印次、4 块补版**。
+
+命令：
+
+```bash
+# 打印本版坐标表（局部坐标，最多 8 点）
+python3 -m plate_proofing.cli grid
+
+# 跑完题目所有情形，落 artifacts/workorder/{workorder,workorder_summary}.json
+python3 -m plate_proofing.cli workorder
+```
+
+`workorder_summary.json` 直接给出：所选补版工艺、可签样号（`signable_samples`）、
+拒签样与**具体拒签位置**（点 + 原因），以及逐条 `expected` 布尔。
+

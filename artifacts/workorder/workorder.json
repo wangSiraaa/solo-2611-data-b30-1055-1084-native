@@ -1,0 +1,741 @@
+{
+  "cases": {
+    "case_full_work_order": {
+      "expected": {
+        "S80_signs": true,
+        "S80_slot_listed": true,
+        "S81_signs": true,
+        "S82_refused_torn": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "craft": "catch_frame",
+          "film_consumed": [],
+          "origin_consumed": [],
+          "results": [
+            {
+              "disputed_points": [],
+              "matched_readings": [
+                "R80"
+              ],
+              "notes": [],
+              "printed": {
+                "C": "complete",
+                "D": "complete",
+                "F": "complete",
+                "G": "complete",
+                "H": "complete",
+                "L": "missing",
+                "R": "complete",
+                "U": "complete"
+              },
+              "refusals": [],
+              "run": 80,
+              "sample": "S80",
+              "sheet": "S80",
+              "signable": true,
+              "used_mounts": [
+                "P-R"
+              ]
+            },
+            {
+              "disputed_points": [],
+              "matched_readings": [
+                "R81"
+              ],
+              "notes": [],
+              "printed": {
+                "C": "complete",
+                "D": "complete",
+                "F": "complete",
+                "G": "complete",
+                "H": "complete",
+                "L": "complete",
+                "R": "complete",
+                "U": "complete"
+              },
+              "refusals": [],
+              "run": 81,
+              "sample": "S81",
+              "sheet": "S81",
+              "signable": true,
+              "used_mounts": [
+                "P-L",
+                "P-R"
+              ]
+            },
+            {
+              "disputed_points": [],
+              "matched_readings": [
+                "R82"
+              ],
+              "notes": [],
+              "printed": {
+                "C": "complete",
+                "D": "complete",
+                "F": "complete",
+                "G": "complete",
+                "H": "complete",
+                "L": "missing",
+                "R": "complete",
+                "U": "complete"
+              },
+              "refusals": [
+                {
+                  "detail": "point R: cannot be verified (torn witness only)",
+                  "kind": "unverifiable",
+                  "point": "R",
+                  "torn": true
+                }
+              ],
+              "run": 82,
+              "sample": "S82",
+              "sheet": "S82",
+              "signable": false,
+              "used_mounts": []
+            }
+          ],
+          "signed": [
+            "S80",
+            "S81"
+          ],
+          "step": "batch"
+        }
+      ]
+    },
+    "case_held_member_blocks_proof": {
+      "expected": {
+        "C1_not_wholly_held": true,
+        "C2_wholly_held": true,
+        "C3_not_wholly_held": true,
+        "free_case_signs": true,
+        "held_case_refused": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "C1_held": false,
+          "C2_free": true,
+          "C3_missing_trigger": false,
+          "step": "custody_basis"
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "R40"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "whole case not validly held (member held or trigger missing); cannot sign this proof",
+              "kind": "custody_incomplete"
+            }
+          ],
+          "signable": false,
+          "step": "held_case",
+          "used_mounts": []
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "R40"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "free_case",
+          "used_mounts": [
+            "P-R"
+          ]
+        }
+      ]
+    },
+    "case_pattern_ok_no_slot_film_approval": {
+      "expected": {
+        "catch_frame_refused": true,
+        "film_approval_available": true,
+        "film_signs": true,
+        "pattern_correct": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD70"
+          ],
+          "notes": [
+            "independent film approval available for pinned region via FILM-R"
+          ],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "slot S-R is locked by the machine",
+              "kind": "slot_locked",
+              "patch": "P-R"
+            },
+            {
+              "detail": "pin pin-R is locked by the machine",
+              "kind": "pin_locked",
+              "patch": "P-R"
+            }
+          ],
+          "signable": false,
+          "step": "catch_frame_no_slot",
+          "used_mounts": []
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD70"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "film_applied",
+          "used_mounts": [
+            "FILM-R"
+          ]
+        }
+      ]
+    },
+    "case_plan_only_cannot_depose": {
+      "expected": {
+        "custody_unchanged": true,
+        "fake_handoff_refused": true,
+        "new_signer_rejected": true,
+        "old_reading_survives": true,
+        "plan_only_ignored": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "OLD-40"
+          ],
+          "notes": [
+            "plan-only reading ignored (no authority over original): NEW-40"
+          ],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "complete",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "signer 'HOLD-NEW' did not sign any authoritative reading (custodians: ['HOLD-OLD'])",
+              "kind": "signer_not_custodian"
+            }
+          ],
+          "signable": false,
+          "step": "plan_only_reread_tried",
+          "used_mounts": []
+        },
+        {
+          "code": "ineligible_members",
+          "custody": {
+            "C1": "LOCAL",
+            "C2": "LOCAL",
+            "C3": "LOCAL"
+          },
+          "step": "fake_sibling_handoff"
+        }
+      ]
+    },
+    "case_regrind_explains_notch": {
+      "expected": {
+        "regrind_explains_signs": true,
+        "unevidenced_regrind_rejected": true,
+        "unexplained_without_evidence": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RG35"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "complete",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "point R: notch at run 33 becomes complete at run 35 without an evidenced regrind",
+              "kind": "unexplained_transition",
+              "point": "R"
+            }
+          ],
+          "signable": false,
+          "step": "no_regrind_evidence",
+          "used_mounts": []
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RG35"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "complete",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "with_regrind_evidence",
+          "used_mounts": []
+        }
+      ]
+    },
+    "case_restore_and_locked_slot": {
+      "expected": {
+        "appraisal_still_valid_when_locked": true,
+        "appraisal_valid": true,
+        "locked_slot_refuses_proof": true,
+        "prints_L_missing": true,
+        "restore_reinstate_signs": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD-restore"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "after_restore_signable",
+          "used_mounts": [
+            "P-LL"
+          ]
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD-restore"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "slot S-R is locked by the machine",
+              "kind": "slot_locked",
+              "patch": "P-LL"
+            },
+            {
+              "detail": "pin pin-R is locked by the machine",
+              "kind": "pin_locked",
+              "patch": "P-LL"
+            }
+          ],
+          "signable": false,
+          "step": "pin_as_locked_slot",
+          "used_mounts": []
+        }
+      ]
+    },
+    "case_right_patch_signable": {
+      "expected": {
+        "prints_L_missing": true,
+        "prints_R_complete": true,
+        "reread_makes_R_only_insufficient": true,
+        "signable": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD-old"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "sign_with_R_patch",
+          "used_mounts": [
+            "P-R"
+          ]
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD-old-reread"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "point L: proof prints 'missing', reading requires 'complete'",
+              "kind": "mismatch",
+              "point": "L"
+            }
+          ],
+          "signable": false,
+          "step": "sign_after_reread_L_complete",
+          "used_mounts": []
+        }
+      ]
+    },
+    "case_single_sheet_original_judgment": {
+      "expected": {
+        "only_ticket_pieces": true,
+        "printed_keeps_L_missing": true,
+        "signs": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "R90"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "single_sheet",
+          "used_mounts": [
+            "P-R"
+          ]
+        }
+      ]
+    },
+    "case_torn_spanning_regrind": {
+      "expected": {
+        "L_still_signed_off": true,
+        "torn_R_unverifiable_both_days": true,
+        "torn_not_complete": true,
+        "torn_not_missing": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "TORN-30"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "complete",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "point R: cannot be verified (torn witness only)",
+              "kind": "unverifiable",
+              "point": "R",
+              "torn": true
+            }
+          ],
+          "return_day": 30,
+          "signable": false,
+          "step": "torn_at_30",
+          "used_mounts": []
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "TORN-35"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "complete",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "point R: cannot be verified (torn witness only)",
+              "kind": "unverifiable",
+              "point": "R",
+              "torn": true
+            }
+          ],
+          "return_day": 35,
+          "signable": false,
+          "step": "torn_at_31",
+          "used_mounts": []
+        }
+      ]
+    },
+    "case_two_runs_single_piece": {
+      "expected": {
+        "film_sheet1_signs": true,
+        "film_sheet2_blocked_no_second_piece": true,
+        "run50_signs": true,
+        "run51_blocked_without_swap": true,
+        "run51_signs_after_swap": true
+      },
+      "ok": true,
+      "steps": [
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD50"
+          ],
+          "notes": [],
+          "ok": true,
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "run50_R",
+          "used_mounts": [
+            "P-R"
+          ]
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD51"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "complete",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "slot S-R held by P-R on SH-A",
+              "kind": "slot_unavailable",
+              "patch": "P-R"
+            },
+            {
+              "detail": "pin pin-R held by P-R on SH-A",
+              "kind": "pin_unavailable",
+              "patch": "P-R"
+            },
+            {
+              "detail": "physical piece PHY-R is mounted on SH-A",
+              "kind": "piece_in_use",
+              "patch": "P-R"
+            }
+          ],
+          "signable": false,
+          "step": "run51_no_swap",
+          "used_mounts": []
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RD51"
+          ],
+          "notes": [
+            "frame SH-A dismantled (scan-confirmed)"
+          ],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "complete",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "run51_with_swap",
+          "used_mounts": [
+            "P-R",
+            "P-L"
+          ]
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RDF60"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [],
+          "signable": true,
+          "step": "film_sheet1",
+          "used_mounts": [
+            "FILM-R"
+          ]
+        },
+        {
+          "disputed_points": [],
+          "matched_readings": [
+            "RDF61"
+          ],
+          "notes": [],
+          "printed": {
+            "C": "complete",
+            "D": "complete",
+            "F": "complete",
+            "G": "complete",
+            "H": "complete",
+            "L": "missing",
+            "R": "complete",
+            "U": "complete"
+          },
+          "refusals": [
+            {
+              "detail": "FILM-R: film already applied elsewhere",
+              "kind": "film_spent",
+              "patch": "FILM-R"
+            }
+          ],
+          "signable": false,
+          "step": "film_sheet2_no_second_piece",
+          "used_mounts": []
+        }
+      ]
+    }
+  },
+  "coordinate_table": "P751",
+  "ok": true,
+  "points": [
+    "L",
+    "R",
+    "C",
+    "U",
+    "D",
+    "F",
+    "G",
+    "H"
+  ]
+}
