@@ -130,3 +130,94 @@ Measured by `bench_scale.py`:
 No path optimisation, no measurement adjustment/least-squares, no inference
 of missing positions. Nothing beyond the one explicit base correction is
 changed.
+
+---
+
+# Static display survey: leveling profile + two-wheel carts
+
+The chainage catalog above answers *where* a label and an inspection really
+are. Two further modules turn the published coverage plus the leveling crew's
+readings into a road profile and then into static sign/no-sign verdicts for
+the scale-model display carts. All arithmetic is exact `Fraction`; only the
+static display is checked, never rolling/driving.
+
+## `leveling_profile.py` — setups to a road profile
+
+Each `LevelSetup` is one instrument standing with its **own arbitrary zero**.
+Only reading *differences* are facts, and the task uses height-signed
+readings, so within one setup:
+
+```
+elev(b) - elev(a) = r_b - r_a
+```
+
+The setup zero cancels; a raw reading is never an elevation. One
+`Benchmark` stake fixes the absolute datum. The network is a
+difference-constraint graph solved by BFS:
+
+* the benchmark's component gets absolute elevations;
+* a component **disconnected from the benchmark keeps relative elevations
+  only** — its absolute level is reported unknown (`None`), never assumed
+  zero;
+* a loop whose two paths disagree is a `Misclosure`. Both records are named
+  and `GroundProfile` refuses to publish until it is resolved (no
+  single-valued height exists).
+
+Walked coverage is a separate fact layer (a merged interval union reused
+from `chainage_catalog`). `GroundProfile.ground_at(x)` interpolates linearly
+**only between adjacent measured stakes inside one walked interval**; an
+un-walked gap returns `None` and is never bridged by interpolation.
+
+Worked example (the task's headline): setups read (0,1)=(4,5) and (1,2)=(9,8),
+stake 0 benchmarked at 0 → elevations `0, 1, 0`. Changing only the two middle
+readings to 6 and 10 gives `0, 2, 0`.
+
+## `display_carts.py` — plate clearance, stands, bridges, scheduling
+
+A `Cart` rests on two point wheels; its bottom plate is the contact-point
+chord plus a fixed `plate_rise`. `check_cart` returns three distinct states:
+
+| status       | meaning                                                            |
+|--------------|-------------------------------------------------------------------|
+| `signable`   | every measured point over the span has clearance `>= 0` (0 = touch) |
+| `scrapes`    | a *measured* point has negative clearance                          |
+| `unmeasured` | the span crosses an un-walked gap; undecidable, **not** a scrape   |
+
+Because both the plate chord and each ground segment are linear, the minimum
+clearance on a segment occurs at a measured stake, so proven stakes suffice
+and no unmeasured height is invented. The result names the tightest binding
+segment.
+
+Remediation devices are modelled explicitly and are not interchangeable:
+
+* `required_stand_height` / `StandAssignment` — a set of jacks **locked to
+  the two named wheels of one cart**, lifting both to one common height. A
+  stand stays under its cart for the whole show; with `max_stands=1` two
+  scraping mandatory carts cannot both be saved (the set cannot be moved).
+* `verify_bridge` / `minimum_clearance_bridge` — a straight deck between two
+  measured seats that must clear every measured point in the span. A seat on
+  an unmeasured point or an un-walked gap inside the span makes the bridge
+  baseless and unsigned; weight and roadside footprint are enforced as
+  scheduling limits.
+
+`plan_exhibition` exhaustively enumerates mandatory placements and optional
+candidate placements (bounded by the 12-stake / 8-setup / 5-cart static
+model), maximises carts kept (= minimises cancellations), forbids internal
+road overlap while allowing shared endpoints, and reports each kept cart's
+named position plus the overall minimum clearance and the segment it comes
+from. A mandatory cart with no signable placement makes the whole exhibition
+infeasible with a stated reason, kept separate from a confirmed scrape.
+
+## Running the display modules
+
+```bash
+python3 solution/run_display_demo.py
+python3 -m unittest discover -s solution/tests -v
+```
+
+`run_display_demo.py` prints every task scenario end to end: the 0,1,0 and
+0,2,0 profiles, the half-rise scrape, the named misclosure, the disconnected
+component, the precise un-walked gap `[1,2)`, the repeated-label ambiguity,
+and the crest with one-stand shortfall / two-stand / one-bridge outcomes
+including the bridge losing its basis when a seat becomes unmeasured.
+
