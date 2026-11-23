@@ -94,16 +94,82 @@ labels and positions (`stale=true` once r2 is current).
 ## Running
 
 ```bash
-python3 solution/run_demo.py                    # in-memory
+python3 solution/run_demo.py                    # chainage/inspection (in-memory)
 python3 solution/run_demo.py --db route.db      # durable (resumable)
+python3 solution/run_market_demo.py             # flag flow -> appointments -> rental
 python3 -m unittest discover -s solution/tests -v
 python3 solution/bench_scale.py                 # 20 sections / 500 assets / 200 jobs
+python3 solution/bench_market.py                # briefing envelope (6 groups/8 cells/4 machines)
 ```
 
 `run_demo.py` reads `materials/730` operation by operation, applies the P2
 base correction, and prints the real facility change (B in r1 → C in r2).
 A file-backed DB records an op-log so re-running resumes (mutating ops are
 skipped, read-only ops still render).
+
+## Market cue-flag flow → number-taking → rental
+
+`market_flow.py` and `rental_optimizer.py` sit **on top of** the chainage /
+inspection library and leave it untouched. They model the fair end to end.
+
+### Sight lines and inspection gating (`market_flow.py`)
+
+* Every cue flag (引客旗) and street-corner partition (街角隔板) is a **named
+  physical object**; only objects *actually inspected this session* are trusted.
+* A stop (步行停点) faces ±1 on the route axis and sees flags **in front, up to
+  the first *inspected* partition**. A flag is **recognised** only when the
+  **whole chainage segment** it lives on was inspected (`Flag.segment`), not
+  merely its point — checking the point alone would let a same-number flag on a
+  different chain-broken segment slip in.
+* If a visible flag's segment is uninspected the group **defers** at that stop;
+  it may never substitute a same-number flag outside the segment.
+* Correcting an inspected partition's physical position to *in front* of a flag
+  hides the flag (no ticket, no appointment, no rental).
+
+### Whole-group taking
+
+At each stop a group tries recognised flags by **colour priority → along-path
+distance → physical number**. It takes the **whole group's** slots from a
+**single** flag or nothing (no splitting, no second number). Same-cell arrivals
+are served in registered `fixed_order`; on success the group leaves the path for
+the stall, on failure it walks on. A group that is willing to wait
+(`max_wait_at_stop`) waits for a number bag that is still en route.
+
+### Two issuance protocols
+
+* `SEALED` (方案一): a named real-number segment is sealed to a group up front;
+  other groups cannot take it, and only the guide returning the physical ticket
+  (`released_seals`) frees it. Sealed numbers are still gated by physical
+  arrival (`open_cell`) — while "still en route" even the holder cannot take
+  them.
+* `COURIER` (方案二): nothing is pre-sealed; a courier carries named surplus that
+  becomes takeable at a flag only on arrival. A move between flags is honoured
+  only when **both** flags list the other in `reassign_to`
+  (`Reassignment`/`rejected_reassignments`), and only once the bag arrives.
+
+Late coverage is **additive**: a group that already holds a ticket is passed as
+`frozen_tickets`, is never re-evaluated or revoked, and keeps its appointment.
+Only still-open groups are replayed against the supplemented session.
+
+### Rental plan (`rental_optimizer.py`)
+
+The desk turns **real stall appointments** (plus pre-existing reservations) into
+a plan honouring: per-person wait tolerance, same-stall FCFS (cells never
+decrease along a stall's queue), one person per machine per cell, customers never
+switch stalls, per-machine whole-shift price, per-machine **allowed first
+stalls** (首投点), and stall-to-stall move cost. It returns the **minimum total
+whole-shift rent**, the named per-cell machine dispatch, and the named person
+called. Incremental mode (`locked` services + `paid_machines`) serves already-
+called people first and, when the remainder can't finish, reports the
+`earliest_unserviceable` ticket. The search is exact inside the brief's envelope
+(≤6 groups, ≤8 cells, ≤3 stalls, ≤4 machines).
+
+The brief's worked numbers are pinned in `tests/test_market_flow.py`: the
+ordinary first group (rent 1 with one cell of wait, rent 2 for same-cell
+service, rent 0 when the partition correction hides the flag); the near/far red
+flags (near=3, far=2, no 1+2 combining, different stalls); and the Jia/Yi
+en-route example under both protocols, where delaying the courier one cell
+raises the minimum rent from 1 to 2.
 
 ## Scale / cost (20 sections, 500 facilities, 200 jobs)
 
