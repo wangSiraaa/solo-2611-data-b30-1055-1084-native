@@ -281,3 +281,224 @@ def _subtree_leaves(dept: str, children_of: dict[str, list[str]]) -> set[str]:
         else:
             stack.extend(kids)
     return result
+
+
+# ---------------------------------------------------------------- 成本联算独立审计
+
+
+def _fraction(num: int, den: int) -> Fraction:
+    return Fraction(int(num), int(den))
+
+
+def _independent_scc(nodes: list[str], succ: dict[str, list[str]]) -> list[list[str]]:
+    """审计专用 SCC：与生产代码的 Tarjan 不同，用 Kosaraju 两遍 DFS。"""
+    rev: dict[str, list[str]] = {n: [] for n in nodes}
+    for u in nodes:
+        for v in succ[u]:
+            rev[v].append(u)
+    visited: set[str] = set()
+    order: list[str] = []
+
+    def dfs1(v: str) -> None:
+        stack = [(v, 0)]
+        visited.add(v)
+        while stack:
+            node, i = stack[-1]
+            if i < len(succ[node]):
+                stack[-1] = (node, i + 1)
+                nxt = succ[node][i]
+                if nxt not in visited:
+                    visited.add(nxt)
+                    stack.append((nxt, 0))
+            else:
+                order.append(node)
+                stack.pop()
+
+    for n in nodes:
+        if n not in visited:
+            dfs1(n)
+    comp_of: dict[str, int] = {}
+    cid = 0
+    for n in reversed(order):
+        if n in comp_of:
+            continue
+        stack = [n]
+        comp_of[n] = cid
+        while stack:
+            node = stack.pop()
+            for prv in rev[node]:
+                if prv not in comp_of:
+                    comp_of[prv] = cid
+                    stack.append(prv)
+        cid += 1
+    components: list[list[str]] = [[] for _ in range(cid)]
+    for n, c in comp_of.items():
+        components[c].append(n)
+    return components
+
+
+def audit_costflow(
+    ledger_db: str | Path,
+    org_db: str | Path,
+    bound_org_version: int,
+    lines: list[str],
+) -> dict[str, object]:
+    """对实付账联算做独立重算审计。
+
+    刻意不调用 :mod:`orgbudget.costflow` 的求解路径：直接 SQL 读支付、
+    中心、分送表，用 Kosaraju 独立识别 SCC，对开网络建立稠密线性方程组
+    并以独立的 Fraction 消元重算吞吐量，再与生产结果逐项核对：
+
+    1. 分送表比例合计严格 1，只保留实付（取消后余款不计）；
+    2. 就近归集一次，直接成本总额 = 全部实付事件之和；
+    3. 开中心吞吐量满足 q = 直接成本 + 受入；闭圈困钱按来源可指认；
+    4. 全局守恒：直接成本 = 各线金额 + 困圈金额；
+    5. 生产代码 :func:`solve_allocation` 的结果与独立重算逐项一致。
+    """
+    from .costflow import Distribution, solve_allocation  # 延迟导入避免循环
+
+    con = _connect(ledger_db)
+    center_rows = con.execute(
+        "SELECT center_id, org_version, subtree_root FROM center ORDER BY center_id"
+    ).fetchall()
+    table_rows = con.execute(
+        "SELECT center_id, version, target, numerator, denominator FROM distribution_table "
+        "ORDER BY center_id, version, target"
+    ).fetchall()
+    pay_rows = con.execute(
+        "SELECT payment_id, dept_id, amount, paid, cancelled FROM payment"
+    ).fetchall()
+    con.close()
+
+    product = _load_org_product(org_db, bound_org_version)
+    parent_of: dict[str, str | None] = product["parent_of"]  # type: ignore[assignment]
+    checks: list[str] = []
+
+    # 1) 每中心取最新版分送表，独立校验合计 1 且无撤回残留。
+    latest: dict[str, int] = {}
+    for r in table_rows:
+        latest[r["center_id"]] = max(latest.get(r["center_id"], 0), r["version"])
+    shares: dict[str, dict[str, Fraction]] = {c["center_id"]: {} for c in center_rows}
+    for r in table_rows:
+        if r["version"] == latest[r["center_id"]]:
+            shares[r["center_id"]][r["target"]] = _fraction(
+                r["numerator"], r["denominator"]
+            )
+    for cid, table in shares.items():
+        if not table or sum(table.values(), Fraction(0)) != Fraction(1):
+            raise InvalidTree(f"中心 {cid} 分送表不合法或合计不为 1")
+    checks.append("各中心当前分送表比例为正且合计严格 1")
+
+    # 2) 独立实现“沿预算树就近归集一次”，只认真实支付额。
+    subtree_root = {r["center_id"]: r["subtree_root"] for r in center_rows}
+    root_owner = {root: cid for cid, root in subtree_root.items()}
+
+    def nearest(dept: str) -> str | None:
+        cur: str | None = dept
+        while cur is not None:
+            if cur in root_owner:
+                return root_owner[cur]
+            cur = parent_of[cur]
+        return None
+
+    direct: dict[str, Fraction] = {cid: Fraction(0) for cid in shares}
+    event_total = Fraction(0)
+    for r in pay_rows:
+        actual = Fraction(r["paid"] if r["cancelled"] else r["amount"])
+        event_total += actual
+        owner = nearest(r["dept_id"])
+        if owner is None:
+            raise InvalidTree(f"支付 {r['payment_id']} 无登记中心可归集")
+        direct[owner] += actual
+    if sum(direct.values(), Fraction(0)) != event_total:
+        raise InvalidTree("归集总额与实付事件总额不符")
+    checks.append("实付按最近登记中心归集一次，取消余款不计，总额守恒")
+
+    # 3) Kosaraju 独立识别 SCC 与闭圈。
+    centers = sorted(shares)
+    line_set = set(lines)
+    center_succ = {
+        c: [t for t in shares[c] if t not in line_set] for c in centers
+    }
+    components = _independent_scc(centers, center_succ)
+    closed: list[set[str]] = []
+    for comp in components:
+        member = set(comp)
+        if not any(t not in member for c in comp for t in shares[c]):
+            closed.append(member)
+    open_nodes = [c for c in centers if not any(c in m for m in closed)]
+
+    # 4) 对开网络建稠密方程 q_i - Σ a_ji q_j = d_i，独立 Fraction 消元。
+    n = len(open_nodes)
+    idx = {c: i for i, c in enumerate(open_nodes)}
+    matrix = [[Fraction(0)] * n for _ in range(n)]
+    rhs = [direct.get(c, Fraction(0)) for c in open_nodes]
+    for i, c in enumerate(open_nodes):
+        matrix[i][i] = Fraction(1)
+        for t, frac in shares[c].items():
+            if t in idx:  # 边 c -> t：出现在 t 的受入项
+                matrix[idx[t]][i] -= frac
+    aug = [matrix[i] + [rhs[i]] for i in range(n)]
+    pivot_row = 0
+    for col in range(n):
+        pivot = next((r for r in range(pivot_row, n)
+                      if aug[r][col] != Fraction(0)), None)
+        if pivot is None:
+            raise InvalidTree(f"开网络第 {col} 列无主元，结构异常")
+        aug[pivot_row], aug[pivot] = aug[pivot], aug[pivot_row]
+        val = aug[pivot_row][col]
+        aug[pivot_row] = [x / val for x in aug[pivot_row]]
+        for r in range(n):
+            if r != pivot_row and aug[r][col] != Fraction(0):
+                factor = aug[r][col]
+                aug[r] = [x - factor * y for x, y in zip(aug[r], aug[pivot_row])]
+        pivot_row += 1
+    throughput = {open_nodes[i]: aug[i][n] for i in range(n)}
+    for c in closed:
+        for node in c:
+            throughput[node] = Fraction(0)
+
+    # 5) 独立算各线金额与困圈金额，核对守恒。
+    line_amount = {L: Fraction(0) for L in lines}
+    for c in open_nodes:
+        for t, frac in shares[c].items():
+            if t in line_set:
+                line_amount[t] += throughput[c] * frac
+    trapped = Fraction(0)
+    for member in closed:
+        for c in member:
+            incoming = direct.get(c, Fraction(0)) + sum(
+                throughput[u] * shares[u][c]
+                for u in centers if c in shares[u]
+            )
+            trapped += incoming
+    if sum(direct.values(), Fraction(0)) != sum(line_amount.values(), Fraction(0)) + trapped:
+        raise InvalidTree("独立重算全局守恒不成立")
+    checks.append("开网络独立消元、闭圈困钱独立指认，注入 = 归线 + 困圈")
+
+    # 6) 与生产代码结果逐项比对。
+    production = solve_allocation(
+        [Distribution(c, dict(shares[c])) for c in centers],
+        direct, lines,
+    )
+    for c in centers:
+        if production.center_throughput[c] != throughput[c]:
+            raise InvalidTree(
+                f"中心 {c} 吞吐量生产值 {production.center_throughput[c]} "
+                f"!= 独立重算 {throughput[c]}"
+            )
+    for L in lines:
+        if production.line_amount[L] != line_amount[L]:
+            raise InvalidTree(f"线 {L} 金额两套实现不一致")
+    if production.total_trapped() != trapped:
+        raise InvalidTree("困圈金额两套实现不一致")
+    checks.append("生产 SCC/Tarjan 路径与独立 Kosaraju/稠密消元结果逐项一致")
+
+    return {
+        "checks": tuple(checks),
+        "direct_cost": dict(direct),
+        "throughput": throughput,
+        "line_amount": line_amount,
+        "trapped": trapped,
+        "closed_components": tuple(tuple(sorted(m)) for m in closed),
+    }
