@@ -14,6 +14,30 @@ from .compositor import (
     produce_dataset,
     reference_replay,
 )
+from .demold import (
+    Arrival,
+    Cavity,
+    CoaxialRow,
+    DemoldEvent,
+    DemoldResult,
+    DemoldWorld,
+    FrameRoles,
+    PulseReport,
+    arrivals_from,
+    cavity_can_demold,
+    explain_cavity,
+    simulate_demold,
+)
+from .tray import (
+    Box,
+    BufferDevice,
+    DelayPinDevice,
+    Tray,
+    TrayCell,
+    simulate_trays,
+    validate_trajectory,
+)
+from .puzzle import Scenario, solve
 from .gif_io import GifFile, GifImage, frame_spec, parse_gif, write_gif
 
 __all__ = [
@@ -27,6 +51,27 @@ __all__ = [
     "normalize_time",
     "produce_dataset",
     "reference_replay",
+    "Arrival",
+    "Cavity",
+    "CoaxialRow",
+    "DemoldEvent",
+    "DemoldResult",
+    "DemoldWorld",
+    "FrameRoles",
+    "PulseReport",
+    "arrivals_from",
+    "cavity_can_demold",
+    "explain_cavity",
+    "simulate_demold",
+    "Box",
+    "BufferDevice",
+    "DelayPinDevice",
+    "Tray",
+    "TrayCell",
+    "simulate_trays",
+    "validate_trajectory",
+    "Scenario",
+    "solve",
     "GifFile",
     "GifImage",
     "frame_spec",
