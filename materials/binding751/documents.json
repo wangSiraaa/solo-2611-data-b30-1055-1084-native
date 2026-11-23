@@ -1,0 +1,8 @@
+{
+  "documents": [
+    {"doc_id": "B1", "case_id": "V1", "rule_ids": ["R1"]},
+    {"doc_id": "B2", "case_id": "V1", "rule_ids": ["R1"]},
+    {"doc_id": "B4", "case_id": "V1", "rule_ids": ["R1"]},
+    {"doc_id": "B3", "case_id": "V2", "rule_ids": ["R1"]}
+  ]
+}

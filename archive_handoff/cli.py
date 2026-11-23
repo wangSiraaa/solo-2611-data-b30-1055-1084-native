@@ -310,6 +310,59 @@ def cmd_operations(args) -> None:
         raise SystemExit(1)
 
 
+def cmd_binding_demo(args) -> None:
+    """Run the documented leaf-assembly support + photography walkthrough."""
+    from .binding_scenario import run_binding_demo
+
+    result = run_binding_demo(args.data, materials=args.materials)
+    _dump(result)
+    if not result.get("ok"):
+        raise SystemExit(1)
+
+
+def cmd_binding_support(args) -> None:
+    """Print the whole-volume support witness (and optional pose check)."""
+    from .binding_scenario import demo_assembly
+    from .binding import SupportModel
+
+    model = SupportModel(demo_assembly(),
+                         custodian_of=lambda c: None)
+    out = {"witness": model.support_witness()}
+    if args.pose:
+        pose = tuple(int(ch) for ch in args.pose)
+        out["pose_check"] = model.pose_witness(pose)
+    if args.seam:
+        out["seam_query"] = model.query_seam(args.seam)
+    _dump(out)
+
+
+def cmd_binding_plan(args) -> None:
+    """Plan a shot list against the clamp jig (single-clamp unless --double)."""
+    from .binding_scenario import (
+        demo_assembly,
+        double_clamp_station,
+        local_station,
+    )
+    from .binding import SupportModel
+    from .photography import ClampJigPlanner, TargetShot
+
+    model = SupportModel(demo_assembly(), custodian_of=lambda c: None)
+    station = double_clamp_station() if args.double else local_station()
+    targets = []
+    for raw in args.target:
+        t = json.loads(raw)
+        targets.append(TargetShot(
+            shot_id=t["shot_id"], seam_id=t["seam"],
+            required_level=t["level"], must_see=frozenset(t.get("must_see", [])),
+        ))
+    clamps = list(args.clamp or [])
+    planner = ClampJigPlanner(station, model, initial_clamps=clamps)
+    plan = planner.plan(targets)
+    _dump(plan)
+    if not plan["feasible"]:
+        raise SystemExit(1)
+
+
 def cmd_requests(args) -> None:
     """Submit a JSONL file of fully-specified handoff requests.
 
@@ -424,6 +477,27 @@ def build_parser() -> argparse.ArgumentParser:
     sp.add_argument("--file", required=True)
     sp.add_argument("--allow-rejects", action="store_true")
     sp.set_defaults(func=cmd_requests)
+
+    sp = sub.add_parser("binding-demo",
+                        help="leaf-assembly support + photography walkthrough")
+    sp.add_argument("--materials", default="materials/binding751")
+    sp.set_defaults(func=cmd_binding_demo)
+
+    sp = sub.add_parser("binding-support",
+                        help="print the whole-volume support witness")
+    sp.add_argument("--pose", help="check one pose, e.g. 111")
+    sp.add_argument("--seam", help="query one seam, e.g. F1")
+    sp.set_defaults(func=cmd_binding_support)
+
+    sp = sub.add_parser("binding-plan",
+                        help="plan a shot list on the clamp jig")
+    sp.add_argument("--target", action="append", required=True,
+                    help='JSON, e.g. {"shot_id":"T1","seam":"F1","level":1,"must_see":[2,3]}')
+    sp.add_argument("--double", action="store_true",
+                    help="use the double-clamp bracket (default: single-clamp)")
+    sp.add_argument("--clamp", type=int, action="append",
+                    help="initial clamp column (repeatable)")
+    sp.set_defaults(func=cmd_binding_plan)
     return p
 
 

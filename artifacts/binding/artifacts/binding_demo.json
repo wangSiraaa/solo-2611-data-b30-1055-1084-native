@@ -1,0 +1,1131 @@
+{
+  "cases": {
+    "A": {
+      "after_measurement": {
+        "goal_11_reachable_from_00": false,
+        "goal_11_statically_safe": true,
+        "measurement": "M-A",
+        "note": "target stays statically safe, but 00 and 11 are not adjacent; a one-seam move 00->11 jumps two seams and is not allowed",
+        "table": [
+          "00",
+          "11"
+        ]
+      },
+      "case": "A_support_and_reachability",
+      "route_00_to_11": [
+        {
+          "from": 0,
+          "seam_id": "S0",
+          "to": 1
+        },
+        {
+          "from": 0,
+          "seam_id": "S1",
+          "to": 1
+        }
+      ],
+      "shoot_second_seam_at_1": [
+        {
+          "pose": "10",
+          "step": "open S0"
+        },
+        {
+          "pose": "11",
+          "step": "open S1"
+        }
+      ],
+      "table_before": [
+        "00",
+        "10",
+        "11"
+      ]
+    },
+    "B": {
+      "case": "B_handover",
+      "double_clamp": {
+        "actions": [
+          {
+            "action": "open_seam",
+            "cost": 1,
+            "detail": {
+              "from": 0,
+              "seam_id": "R",
+              "to": 1
+            },
+            "post": {
+              "clamps": [
+                5
+              ],
+              "pose": "11"
+            },
+            "pre": {
+              "clamps": [
+                5
+              ],
+              "pose": "10"
+            }
+          },
+          {
+            "action": "add_clamp",
+            "cost": 1,
+            "detail": {
+              "column": 4
+            },
+            "post": {
+              "clamps": [
+                4,
+                5
+              ],
+              "pose": "11"
+            },
+            "pre": {
+              "clamps": [
+                5
+              ],
+              "pose": "11"
+            }
+          },
+          {
+            "action": "remove_clamp",
+            "cost": 1,
+            "detail": {
+              "column": 5
+            },
+            "post": {
+              "clamps": [
+                4
+              ],
+              "pose": "11"
+            },
+            "pre": {
+              "clamps": [
+                4,
+                5
+              ],
+              "pose": "11"
+            }
+          },
+          {
+            "action": "shoot",
+            "cost": 1,
+            "detail": {
+              "clamps": [
+                4
+              ],
+              "level": 1,
+              "seam_id": "R",
+              "shot_id": "sh-right",
+              "visible": [
+                2,
+                3,
+                5
+              ]
+            },
+            "post": {
+              "clamps": [
+                4
+              ],
+              "pose": "11"
+            },
+            "pre": {
+              "clamps": [
+                4
+              ],
+              "pose": "11"
+            }
+          }
+        ],
+        "feasible": true,
+        "handover_states": [
+          {
+            "action": {
+              "add_clamp": 4
+            },
+            "clamps": [
+              4,
+              5
+            ],
+            "safe": true,
+            "step": "engage_new"
+          },
+          {
+            "action": {
+              "remove_clamp": 5
+            },
+            "clamps": [
+              4
+            ],
+            "safe": true,
+            "step": "withdraw_old"
+          },
+          {
+            "note": "the two states are each safe; the engage cannot be skipped"
+          }
+        ],
+        "note": "engage the new clamp (state safe) -> withdraw the old clamp (state safe); the engage cannot be skipped"
+      },
+      "new_clamp_also_occludes_right": {
+        "feasible": false,
+        "note": "if the only takeover position also hides the right column, the frame still cannot be shot",
+        "reason": "hold_occludes_must_see"
+      },
+      "single_clamp": {
+        "actions": [
+          {
+            "action": "open_seam",
+            "cost": 1,
+            "detail": {
+              "from": 1,
+              "seam_id": "L",
+              "to": 0
+            },
+            "post": {
+              "clamps": [
+                5
+              ],
+              "pose": "00"
+            },
+            "pre": {
+              "clamps": [
+                5
+              ],
+              "pose": "10"
+            }
+          },
+          {
+            "action": "remove_clamp",
+            "cost": 1,
+            "detail": {
+              "column": 5
+            },
+            "post": {
+              "clamps": [],
+              "pose": "00"
+            },
+            "pre": {
+              "clamps": [
+                5
+              ],
+              "pose": "00"
+            }
+          },
+          {
+            "action": "add_clamp",
+            "cost": 1,
+            "detail": {
+              "column": 4
+            },
+            "post": {
+              "clamps": [
+                4
+              ],
+              "pose": "00"
+            },
+            "pre": {
+              "clamps": [],
+              "pose": "00"
+            }
+          },
+          {
+            "action": "open_seam",
+            "cost": 1,
+            "detail": {
+              "from": 0,
+              "seam_id": "L",
+              "to": 1
+            },
+            "post": {
+              "clamps": [
+                4
+              ],
+              "pose": "10"
+            },
+            "pre": {
+              "clamps": [
+                4
+              ],
+              "pose": "00"
+            }
+          },
+          {
+            "action": "open_seam",
+            "cost": 1,
+            "detail": {
+              "from": 0,
+              "seam_id": "R",
+              "to": 1
+            },
+            "post": {
+              "clamps": [
+                4
+              ],
+              "pose": "11"
+            },
+            "pre": {
+              "clamps": [
+                4
+              ],
+              "pose": "10"
+            }
+          },
+          {
+            "action": "shoot",
+            "cost": 1,
+            "detail": {
+              "clamps": [
+                4
+              ],
+              "level": 1,
+              "seam_id": "R",
+              "shot_id": "sh-right",
+              "visible": [
+                2,
+                3,
+                5
+              ]
+            },
+            "post": {
+              "clamps": [
+                4
+              ],
+              "pose": "11"
+            },
+            "pre": {
+              "clamps": [
+                4
+              ],
+              "pose": "11"
+            }
+          }
+        ],
+        "feasible": true,
+        "note": "single clamp cannot take over without retracting every seam to the handover pose first; it then reopens"
+      }
+    },
+    "C": {
+      "case": "C_standby_permanently_barred",
+      "feasible": false,
+      "note": "any route leaves the right column hidden, so this frame is unshootable on the standby table; a numbered pad swap is possible only between qualified poses, but the fixed bar still hides the must-see column",
+      "reason": "column_occluded",
+      "stop_frame_probe": {
+        "angle_allowed": true,
+        "bar_occludes_must_see": [
+          5
+        ],
+        "hold_ok": true,
+        "jig": "stop_frame (analysis only)",
+        "note": "fixed frame may reach the level but its bars permanently hide a must-see column",
+        "pad_swap": {
+          "note": "a numbered short pad may replace one stop between qualified poses; before the swap the old frame's stop still limits the angle",
+          "numbered_pad": "P3",
+          "old_limits_valid_until_swap": true,
+          "qualified_initial_pose": true,
+          "replaces_stop": "S2",
+          "shootable_only_after_swap": false
+        },
+        "shootable_before_pad_swap": false,
+        "target": "sh-right"
+      }
+    },
+    "D": {
+      "case": "D_custody_signing_and_transit",
+      "ok": true,
+      "steps": [
+        {
+          "accepted": true,
+          "signer": "LOCAL",
+          "step": "local_signs_measurement"
+        },
+        {
+          "accepted": false,
+          "code": "unsigned_measurement",
+          "step": "outside_signer_rejected"
+        },
+        {
+          "code": "ineligible_members",
+          "custodian_after": "LOCAL",
+          "members": [
+            "B1",
+            "B2",
+            "B4"
+          ],
+          "note": "B4 on hold -> whole case not releasable -> no outside handoff",
+          "rejected": true,
+          "step": "cannot_split_held_volume_out"
+        },
+        {
+          "feasible": true,
+          "note": "already-at-origin device works under LOCAL measurements",
+          "produced_by": "LOCAL",
+          "step": "origin_equipment_may_work"
+        },
+        {
+          "authority_still": "LOCAL",
+          "case": "V2",
+          "custody": {
+            "case_id": "V2",
+            "confirmed_custodian": "LOCAL",
+            "in_transit": [
+              {
+                "from": "LOCAL",
+                "note": "prepared only; custody does NOT move until confirmed",
+                "proposal_id": "P-D",
+                "status": "prepared",
+                "to": "OUTPOST"
+              }
+            ],
+            "measurement_authority": "LOCAL"
+          },
+          "note": "prepared slip keeps LOCAL as measurement authority; an outside frame is not countable until confirmed",
+          "outside_frame_countable": false,
+          "step": "prepared_not_confirmed"
+        }
+      ]
+    }
+  },
+  "data_dir": "/workspace/artifacts/binding",
+  "expected": {
+    "A_after_00_and_11_only": true,
+    "A_goal_now_unreachable": true,
+    "A_goal_still_statically_safe": true,
+    "A_route_is_two_steps": true,
+    "A_table_00_10_11": true,
+    "B_double_clamp_engage_then_withdraw": true,
+    "B_new_clamp_occluding_is_unshootable": true,
+    "B_single_clamp_handover_via_retract": true,
+    "C_standby_unshootable": true,
+    "C_stop_frame_bar_hides_column": true,
+    "D_custody_ok": true,
+    "imaging_infeasible_targets_present": true
+  },
+  "materials_import_check": {
+    "documents": {
+      "accepted": 4,
+      "changed": true
+    },
+    "events": {
+      "accepted": 4,
+      "changed": true
+    },
+    "holds": {
+      "accepted": 1,
+      "changed": true
+    },
+    "mirrored": 4,
+    "rules": {
+      "accepted": 1,
+      "changed": true
+    }
+  },
+  "ok": true,
+  "warnings": [],
+  "work_order": {
+    "case_id": "V1",
+    "custody": {
+      "case_id": "V1",
+      "confirmed_custodian": "LOCAL",
+      "in_transit": [],
+      "measurement_authority": "LOCAL"
+    },
+    "imaging_order": {
+      "actions": [
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 0,
+            "seam_id": "F1",
+            "to": 1
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "000"
+          }
+        },
+        {
+          "action": "shoot",
+          "cost": 1,
+          "detail": {
+            "clamps": [
+              6
+            ],
+            "level": 1,
+            "seam_id": "F1",
+            "shot_id": "T1",
+            "visible": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 1,
+            "seam_id": "F1",
+            "to": 0
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "000"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 0,
+            "seam_id": "F1",
+            "to": 1
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "000"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 0,
+            "seam_id": "F2",
+            "to": 1
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "110"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          }
+        },
+        {
+          "action": "shoot",
+          "cost": 1,
+          "detail": {
+            "clamps": [
+              6
+            ],
+            "level": 1,
+            "seam_id": "F2",
+            "shot_id": "T2",
+            "visible": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "110"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "110"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 1,
+            "seam_id": "F2",
+            "to": 0
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "110"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 1,
+            "seam_id": "F1",
+            "to": 0
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "000"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "100"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 0,
+            "seam_id": "F1",
+            "to": 2
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "200"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "000"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 0,
+            "seam_id": "F2",
+            "to": 2
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "220"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "200"
+          }
+        },
+        {
+          "action": "open_seam",
+          "cost": 1,
+          "detail": {
+            "from": 0,
+            "seam_id": "F3",
+            "to": 2
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "222"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "220"
+          }
+        },
+        {
+          "action": "shoot",
+          "cost": 1,
+          "detail": {
+            "clamps": [
+              6
+            ],
+            "level": 2,
+            "seam_id": "F3",
+            "shot_id": "T3",
+            "visible": [
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "post": {
+            "clamps": [
+              6
+            ],
+            "pose": "222"
+          },
+          "pre": {
+            "clamps": [
+              6
+            ],
+            "pose": "222"
+          }
+        }
+      ],
+      "assembly_id": "VOL-B1",
+      "budget": {
+        "clamp_moves": 0,
+        "frames": 3,
+        "seam_moves": 9,
+        "total_ops": 12
+      },
+      "custody": {
+        "case_id": "V1",
+        "confirmed_custodian": "LOCAL",
+        "in_transit": [],
+        "measurement_authority": "LOCAL"
+      },
+      "feasible": false,
+      "jig": "clamp_bracket(clamp_slots=1)",
+      "order": "imaging",
+      "produced_by": "LOCAL",
+      "targets": [
+        {
+          "clamps": [
+            6
+          ],
+          "feasible": true,
+          "moves": 1,
+          "must_see": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "pose": "100",
+          "required_level": 1,
+          "seam_id": "F1",
+          "shot_id": "T1",
+          "visible": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "clamps": [
+            6
+          ],
+          "feasible": true,
+          "moves": 3,
+          "must_see": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "pose": "110",
+          "required_level": 1,
+          "seam_id": "F2",
+          "shot_id": "T2",
+          "visible": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "clamps": [
+            6
+          ],
+          "feasible": true,
+          "moves": 5,
+          "must_see": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "pose": "222",
+          "required_level": 2,
+          "seam_id": "F3",
+          "shot_id": "T3",
+          "visible": [
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "detail": "every clamp coverage that holds the active strips covers a must-see column (the only shared hold position hides it)",
+          "feasible": false,
+          "must_see": [
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "reason": "hold_occludes_must_see",
+          "required_level": 2,
+          "seam_id": "F2",
+          "shot_id": "T4"
+        }
+      ]
+    },
+    "institution": "LOCAL",
+    "refresh_status": [
+      {
+        "feasible": true,
+        "original_page": "B1",
+        "pose": "100",
+        "reason": "planned",
+        "shot_id": "T1",
+        "visible_columns": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "feasible": true,
+        "original_page": "B1",
+        "pose": "110",
+        "reason": "planned",
+        "shot_id": "T2",
+        "visible_columns": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "feasible": true,
+        "original_page": "B1",
+        "pose": "222",
+        "reason": "planned",
+        "shot_id": "T3",
+        "visible_columns": [
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      {
+        "feasible": false,
+        "original_page": "B1",
+        "pose": "?",
+        "reason": "target infeasible on this station",
+        "shot_id": "T4",
+        "visible_columns": []
+      }
+    ],
+    "station": "LOCAL-TABLE",
+    "stop_frame_analysis": [
+      {
+        "angle_allowed": true,
+        "bar_occludes_must_see": [],
+        "hold_ok": true,
+        "jig": "stop_frame (analysis only)",
+        "note": "no fixed-bar occlusion",
+        "shootable_before_pad_swap": true,
+        "target": "T1"
+      },
+      {
+        "angle_allowed": true,
+        "bar_occludes_must_see": [],
+        "hold_ok": true,
+        "jig": "stop_frame (analysis only)",
+        "note": "no fixed-bar occlusion",
+        "shootable_before_pad_swap": true,
+        "target": "T2"
+      },
+      {
+        "angle_allowed": true,
+        "bar_occludes_must_see": [],
+        "hold_ok": true,
+        "jig": "stop_frame (analysis only)",
+        "note": "no fixed-bar occlusion",
+        "shootable_before_pad_swap": true,
+        "target": "T3"
+      },
+      {
+        "angle_allowed": true,
+        "bar_occludes_must_see": [],
+        "hold_ok": true,
+        "jig": "stop_frame (analysis only)",
+        "note": "no fixed-bar occlusion",
+        "shootable_before_pad_swap": true,
+        "target": "T4"
+      }
+    ],
+    "support_order": {
+      "assembly_id": "VOL-B1",
+      "case_id": "V1",
+      "custody": {
+        "case_id": "V1",
+        "confirmed_custodian": "LOCAL",
+        "in_transit": [],
+        "measurement_authority": "LOCAL"
+      },
+      "order": "true_support",
+      "queries": [
+        {
+          "kind": "seam",
+          "result": {
+            "levels": [
+              {
+                "constraining_strips": [],
+                "extendable": true,
+                "level": 0,
+                "marginal": true
+              },
+              {
+                "constraining_strips": [],
+                "extendable": true,
+                "level": 1,
+                "marginal": true
+              },
+              {
+                "constraining_strips": [],
+                "extendable": true,
+                "level": 2,
+                "marginal": true
+              }
+            ],
+            "seam_id": "F1",
+            "strips": [
+              {
+                "doc_id": "B1",
+                "seams": [
+                  "F1",
+                  "F2"
+                ],
+                "strip_id": "PA"
+              }
+            ]
+          }
+        },
+        {
+          "kind": "combination",
+          "result": {
+            "conflicts": [],
+            "holdable": true,
+            "partial": {
+              "F1": 1,
+              "F2": 1
+            },
+            "witness_pose": "110"
+          }
+        },
+        {
+          "kind": "combination",
+          "result": {
+            "conflicts": [],
+            "holdable": true,
+            "partial": {
+              "F1": 1,
+              "F3": 1
+            },
+            "witness_pose": "111"
+          }
+        }
+      ],
+      "witness": {
+        "assembly_id": "VOL-B1",
+        "case_id": "V1",
+        "seams": [
+          {
+            "levels": [
+              0,
+              1,
+              2
+            ],
+            "seam_id": "F1"
+          },
+          {
+            "levels": [
+              0,
+              1,
+              2
+            ],
+            "seam_id": "F2"
+          },
+          {
+            "levels": [
+              0,
+              1,
+              2
+            ],
+            "seam_id": "F3"
+          }
+        ],
+        "strips": [
+          {
+            "allowed": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                0
+              ],
+              [
+                2,
+                1
+              ],
+              [
+                2,
+                2
+              ]
+            ],
+            "doc_id": "B1",
+            "hold_at": [
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                1
+              ],
+              [
+                2,
+                2
+              ]
+            ],
+            "hold_positions": [
+              2,
+              3,
+              6
+            ],
+            "leaf_group": "G1",
+            "seams": [
+              "F1",
+              "F2"
+            ],
+            "signed_by": null,
+            "strip_id": "PA"
+          },
+          {
+            "allowed": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                0
+              ],
+              [
+                2,
+                1
+              ],
+              [
+                2,
+                2
+              ]
+            ],
+            "doc_id": "B1",
+            "hold_at": [
+              [
+                1,
+                1
+              ],
+              [
+                2,
+                2
+              ]
+            ],
+            "hold_positions": [
+              4,
+              5,
+              6
+            ],
+            "leaf_group": "G2",
+            "seams": [
+              "F2",
+              "F3"
+            ],
+            "signed_by": null,
+            "strip_id": "PB"
+          }
+        ],
+        "support_count": 10,
+        "support_poses": [
+          "000",
+          "100",
+          "110",
+          "111",
+          "200",
+          "210",
+          "211",
+          "220",
+          "221",
+          "222"
+        ]
+      }
+    },
+    "work_order": "VOL-B1"
+  }
+}
